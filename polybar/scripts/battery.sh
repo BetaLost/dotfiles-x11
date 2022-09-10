@@ -8,6 +8,7 @@ while :; do
 		BAT_ICON=""
 	elif [[ $CUR_BAT -lt 10 ]]; then
 		BAT_ICON=""
+		notify-send --urgency=critical "$CUR_BAT%: Low Battery!"
 	elif [[ $CUR_BAT -gt 10 && $CUR_BAT -lt 20 ]]; then
 		BAT_ICON=""
 		notify-send --urgency=critical "$CUR_BAT%: Low Battery!"
