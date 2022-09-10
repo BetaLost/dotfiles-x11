@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Launch Polybar
+if pgrep -x polybar > /dev/null; then
+	killall polybar
+fi
+
+polybar one -q &
+polybar two -q &
+polybar three -q &
+polybar four -q &
+polybar five -q &
+

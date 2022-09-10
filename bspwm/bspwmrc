@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# Make sure sxhkd is always running
+while :; do
+	if pgrep -x sxhkd > /dev/null; then
+		true
+	else
+		sxhkd &
+	fi
+	sleep 5
+done &
+
+# Make sure picom is always running
+while :; do
+	if pgrep -x picom > /dev/null; then
+		true
+	else
+		picom &
+	fi
+	sleep 5
+done &
+
+# Launch Polybar
+bash $HOME/.config/bspwm/run_polybar &
+
+# Notifications
+/usr/bin/dunst &
+
+# Low battery notifier
+~/.config/bspwm/scripts/low_bat_notifier.sh
+
+# Create workspaces
+#                   
+bspc monitor -d 1 2 3 4 5
+
+# Create gaps
+bspc config window_gap 10
+
+# Border
+bspc config border_width 2
+bspc config focused_border_color        "#6c71c4"
+bspc config normal_border_color         "#073642"
+bspc config active_border_color         "#073642"
+
+# Focus follows cursor
+bspc config focus_follows_pointer true
+
+# Set random wallpaper
+file=$(ls -1 $HOME/.config/wallpapers/ | sort --random-sort | head -1)
+feh --bg-scale $HOME/.config/wallpapers/$file
+
+
