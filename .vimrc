@@ -37,7 +37,7 @@ nnoremap <C-f> :NERDTreeFind<CR>
 
 " CoC
 let g:coc_global_extensions=["coc-rust-analyzer", "coc-clangd", "coc-tsserver", "coc-html", "coc-css"]
-inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<TAB>\<c-r>=coc#on_enter()\<TAB>"
+inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<TAB>"
 
 " Vim-Airline
 let g:airline_powerline_fonts = 1
