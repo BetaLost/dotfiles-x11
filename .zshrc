@@ -1,6 +1,7 @@
 # Prompt
 NL=$'\n'
-PROMPT="%B%F{red}%~${NL}%F{blue}❯ %b%f"
+#PROMPT="%B%F{red}%~${NL}%F{blue}❯ %b%f"
+PROMPT="%F{39} %f%~${NL}%F{39}❯ %b%f"
 
 # History
 HISTFILE=~/.zsh_history
@@ -69,7 +70,7 @@ mns() {
 		sudo mount -t cifs -o username=$2,dir_mode=0777,file_mode=0777 //$3/$4 $HOME/shared/
 	elif [ "$1" = "-m" ] || [ "$1" = "--mount" ]; then
 		mkdir -p $HOME/shared/
-		sudo mount -t cifs -o guest,dir_mode=0777,file_mode=0777 //$1/$2 $HOME/shared/
+		sudo mount -t cifs -o guest,dir_mode=0777,file_mode=0777 //$3/$4 $HOME/shared/
 	elif [ "$1" = "-n" ] || [ "$1" = "--unmount" ]; then
 		sudo umount $HOME/shared/
 		rmdir $HOME/shared/
