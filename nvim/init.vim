@@ -5,7 +5,7 @@ call plug#begin()
 Plug 'nvim-tree/nvim-web-devicons'
 
 " File Tabs
-Plug 'romgrk/barbar.nvim'
+Plug 'akinsho/bufferline.nvim'
 
 " HTML Emmet
 Plug 'mattn/emmet-vim'
@@ -21,6 +21,7 @@ Plug 'nvim-neo-tree/neo-tree.nvim'
 
 " Colors
 Plug 'cpea2506/one_monokai.nvim'
+Plug 'ofirgall/ofirkai.nvim'
 Plug 'lilydjwg/colorizer'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
@@ -29,6 +30,7 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
@@ -47,7 +49,8 @@ set ttimeoutlen=0
 set completeopt=menu,menuone,noselect
 
 " Color Scheme
-colorscheme one_monokai
+set termguicolors
+colorscheme ofirkai
 "hi Normal ctermbg=none
 "hi NonText ctermbg=none
 "hi LineNr ctermbg=none
@@ -73,6 +76,25 @@ set laststatus=2
 set statusline=%!v:lua.require('statusline').get()
 
 lua <<EOF
+	-- Theme
+	require("ofirkai").setup({})
+
+	-- Tabs
+	require("bufferline").setup({
+		highlights = require('ofirkai.tablines.bufferline').highlights,
+
+		options = {
+			themable = true,
+			separator_style = "slant",
+			offsets = {{
+				filetype = "neo-tree",
+				text = "File Explorer",
+				highlight = "Directory",
+				separator = true
+			}}
+		}
+	})
+	
 	-- Setup File Explorer
 	require("neo-tree").setup({
 		close_if_last_window = true,
@@ -113,7 +135,8 @@ lua <<EOF
 
 		sources = cmp.config.sources({
 				{ name = "nvim_lsp" },
-				{ name = "vsnip" }
+				{ name = "vsnip" },
+				{ name = 'nvim_lsp_signature_help' }
 			}, {
 				{ name = "buffer" }
 		})
