@@ -20,9 +20,9 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-neo-tree/neo-tree.nvim'
 
 " Colors
-Plug 'dracula/vim', { 'name': 'dracula' }
+Plug 'cpea2506/one_monokai.nvim'
 Plug 'lilydjwg/colorizer'
-Plug 'sheerun/vim-polyglot'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " Autocomplete
 Plug 'neovim/nvim-lspconfig'
@@ -47,10 +47,10 @@ set ttimeoutlen=0
 set completeopt=menu,menuone,noselect
 
 " Color Scheme
-colorscheme dracula
-hi Normal ctermbg=none
-hi NonText ctermbg=none
-hi LineNr ctermbg=none
+colorscheme one_monokai
+"hi Normal ctermbg=none
+"hi NonText ctermbg=none
+"hi LineNr ctermbg=none
 
 " Nvim Tree
 nnoremap <C-t> :Neotree toggle<CR>
@@ -68,85 +68,8 @@ set list listchars=tab:\│\
 hi NonText ctermfg=239
 
 " Status Bar
-let g:currentmode={
-       \ 'n': 'NORMAL ',
-       \ 'v': 'VISUAL ',
-       \ 'V': 'V·LINE ',
-       \ "\<C-V>": 'V·BLOCK ',
-       \ 'i': 'INSERT ',
-       \ 'R': 'REPLACE ',
-       \ 'Rv': 'V·REPLACE ',
-       \ 'c': 'COMMAND ',
-       \}
-
-let g:R_ARROW="\uE0B0"
-let g:L_ARROW="\uE0B2"
-
-"Green BG
-hi User1 ctermfg=0 ctermbg=49
-
-" Green FG
-hi User2 ctermfg=49 ctermbg=0
-
-" Blue BG
-hi User3 ctermfg=0 ctermbg=39
-
-" Yellow BG
-hi User4 ctermfg=0 ctermbg=220
-
-" Arrow 1
-hi User5 ctermfg=49 ctermbg=39
-
-" Arrow 2
-hi User6 ctermfg=39 ctermbg=220
-
-" Arrow 3
-hi User7 ctermfg=220 ctermbg=0
-
-set laststatus=2
 set noshowmode
-set statusline=
-
-set statusline+=%1*
-set statusline+=\ %{g:currentmode[mode()]}
-
-set statusline+=%5*
-set statusline+=%{g:R_ARROW}
-
-set statusline+=%3*\ 
-set statusline+=%{&modified?'MODIFIED\ ':'UNMODIFIED\ '}
-
-set statusline+=%6*
-set statusline+=%{g:R_ARROW}
-
-set statusline+=%4*\ 
-set statusline+=%{&readonly?'LOCKED\ ':'UNLOCKED\ '}
-
-set statusline+=%7*
-set statusline+=%{g:R_ARROW}
-
-set statusline+=%2*
-set statusline+=\ %F
-set statusline+=\%=
-
-set statusline+=%7*
-set statusline+=%{g:L_ARROW}
-
-set statusline+=%4*
-set statusline+=\ %l/%L\ 
-
-set statusline+=%6*
-set statusline+=%{g:L_ARROW}
-
-set statusline+=%3*
-set statusline+=\ %{&filetype}\ 
-
-set statusline+=%5*
-set statusline+=%{g:L_ARROW}
-
-set statusline+=%1*
-set statusline+=\ %{&fenc}\ 
-
+set laststatus=2
 set statusline=%!v:lua.require('statusline').get()
 
 lua <<EOF
@@ -259,4 +182,18 @@ lua <<EOF
 		'confirm_done',
 		cmp_autopairs.on_confirm_done()
 	)
+
+	-- Syntax Highlighting
+	require('nvim-treesitter.configs').setup {
+		ensure_installed = { "c", "lua", "rust", "python" },
+		sync_install = false,
+		auto_install = true,
+		ignore_install = {},
+
+		highlight = {
+			enable = true,
+			disable = {},
+			additional_vim_regex_highlighting = false
+		},
+	}
 EOF
