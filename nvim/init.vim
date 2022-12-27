@@ -20,13 +20,13 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-neo-tree/neo-tree.nvim'
 
 " Colors
-Plug 'cpea2506/one_monokai.nvim'
 Plug 'ofirgall/ofirkai.nvim'
 Plug 'lilydjwg/colorizer'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " Autocomplete
 Plug 'neovim/nvim-lspconfig'
+Plug 'onsails/lspkind.nvim'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -47,6 +47,7 @@ set signcolumn=no
 set pastetoggle=<F2>
 set ttimeoutlen=0
 set completeopt=menu,menuone,noselect
+set pumheight=10
 
 " Color Scheme
 set termguicolors
@@ -55,7 +56,7 @@ colorscheme ofirkai
 "hi NonText ctermbg=none
 "hi LineNr ctermbg=none
 
-" Nvim Tree
+" NeoTree
 nnoremap <C-t> :Neotree toggle<CR>
 
 " Switch Tabs
@@ -112,8 +113,17 @@ lua <<EOF
 	})
 
 	-- Setup Autocomplete
+	local lspkind = require('lspkind')
 	local cmp = require("cmp")
 	cmp.setup({
+		formatting = {
+			format = lspkind.cmp_format({
+				mode = 'symbol_text',
+				maxwidth = 50,
+				ellipsis_char = '...',
+			})
+		},
+
 		snippet = {
 			expand = function(args)
 				vim.fn["vsnip#anonymous"](args.body)
@@ -201,10 +211,7 @@ lua <<EOF
 	-- Close Pairs
 	require("nvim-autopairs").setup({})
 	local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-	cmp.event:on(
-		'confirm_done',
-		cmp_autopairs.on_confirm_done()
-	)
+	cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
 
 	-- Syntax Highlighting
 	require('nvim-treesitter.configs').setup {
