@@ -103,7 +103,6 @@ local function get_file_info()
 end
 
 local function get_lines()
-	
 	return "%#LinesSep#"..left_sep.."%#Lines# %l/%L %#LinesSep#"..right_sep
 end
 
