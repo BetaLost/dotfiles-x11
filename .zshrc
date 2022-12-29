@@ -1,7 +1,9 @@
 # Prompt
 NL=$'\n'
 #PROMPT="%B%F{red}%~${NL}%F{blue}❯ %b%f"
-PROMPT="%F{39} %f%~${NL}%F{39}❯ %b%f"
+#PROMPT="%F{39} %f%~${NL}%F{39}❯ %b%f"
+PROMPT="%F{#66d9ef} %f%~${NL}%F{#66d9ef}❯ %b%f"
+
 
 # History
 HISTFILE=~/.zsh_history
@@ -38,6 +40,15 @@ auri() {
 		cd ..
 		rm -rf $aurpkg
 	done
+}
+
+# Launch Text Editor
+vim() {
+	kitty @ set-spacing padding=0
+	kitty @ set-font-size 20
+	nvim $*
+	kitty @ set-spacing padding=default
+	kitty @ set-font-size 24
 }
 
 # Downloading files
