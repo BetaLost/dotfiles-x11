@@ -7,6 +7,10 @@ Plug 'nvim-tree/nvim-web-devicons'
 " File Tabs
 Plug 'akinsho/bufferline.nvim'
 
+" Statusline
+Plug 'SmiteshP/nvim-navic'
+Plug 'nvim-lualine/lualine.nvim'
+
 " HTML Emmet
 Plug 'mattn/emmet-vim'
 
@@ -52,16 +56,13 @@ set pumheight=10
 " Color Scheme
 set termguicolors
 colorscheme ofirkai
-"hi Normal ctermbg=none
-"hi NonText ctermbg=none
-"hi LineNr ctermbg=none
 
 " NeoTree
 nnoremap <C-t> :Neotree toggle<CR>
 
 " Switch Tabs
-nnoremap <C-,> :BufferPrevious<CR>
-nnoremap <C-.> :BufferNext<CR>
+nnoremap <C-,> :bprev<CR>
+nnoremap <C-.> :bnext<CR>
 
 " Build System
 autocmd FileType python map <C-b> :w<CR>:!clear && python3 % && clear<CR>
@@ -70,11 +71,14 @@ autocmd FileType rust map <C-b> :w<CR>:!clear && cargo run<CR>
 " Visualize Indent
 set list listchars=tab:\│\ 
 hi NonText ctermfg=239
+inoremap <CR> <CR>x<BS>
+nnoremap o ox<BS>
+nnoremap O Ox<BS>
 
 " Status Bar
-set noshowmode
-set laststatus=2
-set statusline=%!v:lua.require('statusline').get()
+" set noshowmode
+" set laststatus=2
+" set statusline=%!v:lua.require('statusline').get()
 
 lua <<EOF
 	-- Theme
@@ -109,15 +113,77 @@ lua <<EOF
 		},
 		window = {
 			width = 25
+		},
+		filesystem = {
+			filtered_items = {
+				visible = true,
+				hide_dotfiles = false,
+				hide_gitignored = false,
+			}
 		}
 	})
+
+	-- Statusline
+	local navic = require('nvim-navic')
+	navic.setup({
+		separator = "  "
+	})
+	
+	local ofirkai_lualine = require('ofirkai.statuslines.lualine')
+	local winbar = {
+		lualine_a = {},
+		lualine_b = {
+			{
+				'filename',
+				icon = '',
+				color = ofirkai_lualine.winbar_color,
+				padding = { left = 4 }
+			},
+		},
+		lualine_c = {
+			{
+				navic.get_location,
+				icon = "",
+				cond = navic.is_available,
+				color = ofirkai_lualine.winbar_color,
+			},
+		},
+		lualine_x = {},
+		lualine_y = {},
+		lualine_z = {}
+	}
+	
+	require('lualine').setup({
+		options = {
+			icons_enabled = true,
+			disabled_filetypes = { -- Recommended filetypes to disable winbar
+				winbar = { 'gitcommit', 'neo-tree', 'toggleterm', 'fugitive' },
+			},
+		},
+		winbar = winbar,
+		inactive_winbar = winbar,
+	})
+
+	local on_attach = function(client, bufnr)
+		if client.server_capabilities.documentSymbolProvider then
+			navic.attach(client, bufnr)
+		end
+	end
 
 	-- Setup Autocomplete
 	local lspkind = require('lspkind')
 	local cmp = require("cmp")
 	cmp.setup({
+		--window = {
+		--	completion = cmp.config.window.bordered(),
+		--	documentation = cmp.config.window.bordered(),
+		--},
+
+		window = require('ofirkai.plugins.nvim-cmp').window,
+
 		formatting = {
 			format = lspkind.cmp_format({
+				symbol_map = require('ofirkai.plugins.nvim-cmp').kind_icons,
 				mode = 'symbol_text',
 				maxwidth = 50,
 				ellipsis_char = '...',
@@ -129,12 +195,7 @@ lua <<EOF
 				vim.fn["vsnip#anonymous"](args.body)
 			end
 		},
-
-		window = {
-			completion = cmp.config.window.bordered(),
-			documentation = cmp.config.window.bordered(),
-		},
-
+		
 		mapping = cmp.mapping.preset.insert({
 			['<C-b>'] = cmp.mapping.scroll_docs(-4),
 			['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -171,23 +232,28 @@ lua <<EOF
 	local capabilities = require('cmp_nvim_lsp').default_capabilities()
 	
 	require("lspconfig")["pyright"].setup {
-		capabilities = capabilities
+		capabilities = capabilities,
+		on_attach = on_attach
 	}
 
 	require("lspconfig")["tsserver"].setup {
-		capabilities = capabilities
+		capabilities = capabilities,
+		on_attach = on_attach
 	}
 
 	require("lspconfig")["rust_analyzer"].setup {
-		capabilities = capabilities
+		capabilities = capabilities,
+		on_attach = on_attach
 	}
 
 	require("lspconfig")["clangd"].setup {
-		capabilities = capabilities
+		capabilities = capabilities,
+		on_attach = on_attach
 	}
 
 	require("lspconfig")["sumneko_lua"].setup {
 		capabilities = capabilities,
+		on_attach = on_attach,
 		settings = {
 			Lua = {
 				diagnostics = {
