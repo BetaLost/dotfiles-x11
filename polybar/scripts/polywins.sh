@@ -14,7 +14,7 @@ inactive_underline=
 separator="·"
 show="window_class" # options: window_title, window_class, window_classname
 forbidden_classes="Polybar Conky Gmrun"
-empty_desktop_message="Arch Linux"
+empty_desktop_message="%{u#f92672}%{+u}Arch Linux%{-u}"
 
 char_limit=15
 max_windows=15
