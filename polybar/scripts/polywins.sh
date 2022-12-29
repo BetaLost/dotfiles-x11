@@ -5,7 +5,7 @@
 
 active_text_color=
 active_bg=
-active_underline="#69ff94"
+active_underline="#f92672"
 
 inactive_text_color=
 inactive_bg=
@@ -14,7 +14,7 @@ inactive_underline=
 separator="·"
 show="window_class" # options: window_title, window_class, window_classname
 forbidden_classes="Polybar Conky Gmrun"
-empty_desktop_message=" Arch Linux"
+empty_desktop_message="Arch Linux"
 
 char_limit=15
 max_windows=15
