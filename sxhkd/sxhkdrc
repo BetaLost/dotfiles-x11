@@ -45,6 +45,11 @@ super + ctrl + r
 super + {_,shift + }w
 	bspc node -{c,k}
 
+# Choose a different wallpaper
+ctrl + alt + w
+	file=$(ls -1 $HOME/.config/wallpapers/ | sort --random-sort | head -1); \
+	feh --bg-scale $HOME/.config/wallpapers/$file
+
 # alternate between the tiled and monocle layout
 super + m
 	bspc desktop -l next
@@ -107,7 +112,7 @@ super + ctrl + space
 super + ctrl + shift + space
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
-# expand a window by moving one of its side outward
+# expand a window by moving one f its side outward
 super + alt + {Left,Down,Up,Right}
 	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
 
