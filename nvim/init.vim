@@ -5,7 +5,7 @@ call plug#begin()
 Plug 'nvim-tree/nvim-web-devicons'
 
 " File Tabs
-Plug 'akinsho/bufferline.nvim'
+Plug 'romgrk/barbar.nvim'
 
 " Statusline
 Plug 'SmiteshP/nvim-navic'
@@ -24,7 +24,7 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-neo-tree/neo-tree.nvim'
 
 " Colors
-Plug 'ofirgall/ofirkai.nvim'
+Plug 'AlphaTechnolog/pywal.nvim', { 'as': 'pywal' }
 Plug 'lilydjwg/colorizer'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
@@ -54,15 +54,24 @@ set completeopt=menu,menuone,noselect
 set pumheight=10
 
 " Color Scheme
-set termguicolors
-colorscheme ofirkai
+colorscheme pywal
 
 " NeoTree
 nnoremap <C-t> :Neotree toggle<CR>
 
 " Switch Tabs
-nnoremap <C-,> :bprev<CR>
-nnoremap <C-.> :bnext<CR>
+map <A-,> <Cmd>BufferPrevious<CR>
+map <A-.> <Cmd>BufferNext<CR>
+map <A-1> <Cmd>BufferGoto 1<CR>
+map <A-2> <Cmd>BufferGoto 2<CR>
+map <A-3> <Cmd>BufferGoto 3<CR>
+map <A-4> <Cmd>BufferGoto 4<CR>
+map <A-5> <Cmd>BufferGoto 5<CR>
+map <A-6> <Cmd>BufferGoto 6<CR>
+map <A-7> <Cmd>BufferGoto 7<CR>
+map <A-8> <Cmd>BufferGoto 8<CR>
+map <A-9> <Cmd>BufferGoto 9<CR>
+map <A-c> <Cmd>BufferClose<CR>
 
 " Build System
 autocmd FileType python map <C-b> :w<CR>:!clear && python3 % && clear<CR>
@@ -75,30 +84,9 @@ inoremap <CR> <CR>x<BS>
 nnoremap o ox<BS>
 nnoremap O Ox<BS>
 
-" Status Bar
-" set noshowmode
-" set laststatus=2
-" set statusline=%!v:lua.require('statusline').get()
-
 lua <<EOF
-	-- Theme
-	require("ofirkai").setup({})
-
 	-- Tabs
-	require("bufferline").setup({
-		highlights = require('ofirkai.tablines.bufferline').highlights,
-
-		options = {
-			themable = true,
-			separator_style = "slant",
-			offsets = {{
-				filetype = "neo-tree",
-				text = "File Explorer",
-				highlight = "Directory",
-				separator = true
-			}}
-		}
-	})
+	require("bufferline").setup()
 	
 	-- Setup File Explorer
 	require("neo-tree").setup({
@@ -129,14 +117,12 @@ lua <<EOF
 		separator = "  "
 	})
 	
-	local ofirkai_lualine = require('ofirkai.statuslines.lualine')
 	local winbar = {
 		lualine_a = {},
 		lualine_b = {
 			{
 				'filename',
 				icon = '',
-				color = ofirkai_lualine.winbar_color,
 				padding = { left = 4 }
 			},
 		},
@@ -145,7 +131,6 @@ lua <<EOF
 				navic.get_location,
 				icon = "",
 				cond = navic.is_available,
-				color = ofirkai_lualine.winbar_color,
 			},
 		},
 		lualine_x = {},
@@ -155,6 +140,7 @@ lua <<EOF
 	
 	require('lualine').setup({
 		options = {
+			theme = 'pywal-nvim',
 			icons_enabled = true,
 			disabled_filetypes = { -- Recommended filetypes to disable winbar
 				winbar = { 'gitcommit', 'neo-tree', 'toggleterm', 'fugitive' },
@@ -179,11 +165,8 @@ lua <<EOF
 		--	documentation = cmp.config.window.bordered(),
 		--},
 
-		window = require('ofirkai.plugins.nvim-cmp').window,
-
 		formatting = {
 			format = lspkind.cmp_format({
-				symbol_map = require('ofirkai.plugins.nvim-cmp').kind_icons,
 				mode = 'symbol_text',
 				maxwidth = 50,
 				ellipsis_char = '...',
@@ -251,7 +234,7 @@ lua <<EOF
 		on_attach = on_attach
 	}
 
-	require("lspconfig")["sumneko_lua"].setup {
+	require("lspconfig")["lua_ls"].setup {
 		capabilities = capabilities,
 		on_attach = on_attach,
 		settings = {
