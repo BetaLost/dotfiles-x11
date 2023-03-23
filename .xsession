@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Make sure picom is always running
+while :; do
+	if pgrep -x picom > /dev/null; then
+		true
+	else
+		picom &
+	fi
+	sleep 5
+done &
+
 # Set random wallpaper
 HOME=/home/chief
 file=$(ls -1 $HOME/.config/wallpapers/ | sort --random-sort | head -1)
