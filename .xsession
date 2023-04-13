@@ -16,7 +16,7 @@ sh dwmbar.sh &
 # Set random wallpaper
 HOME=/home/chief
 file=$(ls -1 $HOME/.config/wallpapers/ | sort --random-sort | head -1)
-wal --saturate 1 -i $HOME/.config/wallpapers/$file
+wal -i $HOME/.config/wallpapers/$file
 
 cd $HOME/.config/st && sudo make clean install &
 cd $HOME
