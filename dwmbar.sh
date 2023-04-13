@@ -11,7 +11,7 @@ while :; do
 	DATE=$(date +"%a, %d %B %Y")
 	
 	MUTE_STAT=$(pulsemixer --get-mute)
-	if [[ $BAT_STAT == "Charging" ]]; then
+	if [[ $MUTE_STAT == "1" ]]; then
 		VOL_ICON="婢"
 	else
 		VOL_ICON="墳"
@@ -32,7 +32,7 @@ while :; do
 	elif [[ $CUR_BAT -ge 30 && $CUR_BAT -le 40 ]]; then
 		BAT_ICON=""
 	elif [[ $CUR_BAT -ge 40 && $CUR_BAT -le 50 ]]; then
-		BAT_ICON=""	
+		BAT_ICON=""
 	elif [[ $CUR_BAT -ge 50 && $CUR_BAT -le 60 ]]; then
 		BAT_ICON=""
 	elif [[ $CUR_BAT -ge 60 && $CUR_BAT -le 70 ]]; then
@@ -40,15 +40,13 @@ while :; do
 	elif [[ $CUR_BAT -ge 70 && $CUR_BAT -le 80 ]]; then
 		BAT_ICON=""
 	elif [[ $CUR_BAT -ge 80 && $CUR_BAT -le 90 ]]; then
-		BAT_ICON=""	
+		BAT_ICON=""
 	elif [[ $CUR_BAT -ge 90 && $CUR_BAT -le 100 ]]; then
 		BAT_ICON=""
 	fi
 
 	R2=`cat /sys/class/net/wlan0/statistics/rx_bytes`
 	T2=`cat /sys/class/net/wlan0/statistics/tx_bytes`
-	R1=$R2
-	T1=$T1
 	TBPS=`expr $T2 - $T1`
 	RBPS=`expr $R2 - $R1`
 	TKBPS=`expr $TBPS / 1024`
