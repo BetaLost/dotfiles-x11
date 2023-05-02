@@ -25,9 +25,7 @@ elif [[ $TIME -ge 11 && $TIME -lt 16 ]]; then
 	FOLDER=noon
 elif [[ $TIME -ge 16 && $TIME -lt 19 ]]; then
 	FOLDER=sunset
-elif [[ $TIME -eq 19 ]]; then
-	FOLDER=dusk
-elif [[ $TIME -ge 20 ]] || [[ $TIME -lt 4 ]]; then
+elif [[ $TIME -ge 19 ]] || [[ $TIME -lt 4 ]]; then
 	FOLDER=night
 fi
 
