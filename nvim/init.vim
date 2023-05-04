@@ -24,9 +24,9 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-neo-tree/neo-tree.nvim'
 
 " Colors
-Plug 'AlphaTechnolog/pywal.nvim', { 'as': 'pywal' }
 Plug 'lilydjwg/colorizer'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'loctvl842/monokai-pro.nvim'
 
 " Autocomplete
 Plug 'neovim/nvim-lspconfig'
@@ -52,9 +52,6 @@ set pastetoggle=<F2>
 set ttimeoutlen=0
 set completeopt=menu,menuone,noselect
 set pumheight=10
-
-" Color Scheme
-colorscheme pywal
 
 " NeoTree
 nnoremap <C-t> :Neotree toggle<CR>
@@ -85,8 +82,26 @@ nnoremap o ox<BS>
 nnoremap O Ox<BS>
 
 lua <<EOF
+	-- Theme
+	require("monokai-pro").setup({
+		filter = "spectrum", -- classic | octagon | pro | machine | ristretto | spectrum
+	})
+	vim.cmd([[colorscheme monokai-pro]])
+
 	-- Tabs
-	require("bufferline").setup()
+	require("bufferline").setup({
+
+		options = {
+			themable = true,
+			separator_style = "slant",
+			offsets = {{
+				filetype = "neo-tree",
+				text = "File Explorer",
+				highlight = "Directory",
+				separator = true
+			}}
+		}
+	})
 	
 	-- Setup File Explorer
 	require("neo-tree").setup({
@@ -140,7 +155,7 @@ lua <<EOF
 	
 	require('lualine').setup({
 		options = {
-			theme = 'pywal-nvim',
+			theme = 'monokai-pro',
 			icons_enabled = true,
 			disabled_filetypes = { -- Recommended filetypes to disable winbar
 				winbar = { 'gitcommit', 'neo-tree', 'toggleterm', 'fugitive' },
@@ -160,10 +175,10 @@ lua <<EOF
 	local lspkind = require('lspkind')
 	local cmp = require("cmp")
 	cmp.setup({
-		--window = {
-		--	completion = cmp.config.window.bordered(),
-		--	documentation = cmp.config.window.bordered(),
-		--},
+		window = {
+			completion = cmp.config.window.bordered(),
+			documentation = cmp.config.window.bordered(),
+		},
 
 		formatting = {
 			format = lspkind.cmp_format({
