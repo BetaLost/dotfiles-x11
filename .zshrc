@@ -15,8 +15,9 @@ setopt appendhistory
 # Aliases
 alias ls="exa -l"
 alias nf="nerdfetch"
+alias build="make; sudo make clean install"
 alias rconf="source $HOME/.zshrc"
-alias cb="bluetoothctl power on; bluetoothctl agent on; bluetoothctl default-agent; bluetoothctl connect C3:EA:FB:2B:AF:4B"
+alias cb="bluetoothctl power on; bluetoothctl agent on; bluetoothctl default-agent; bluetoothctl connect 18:B9:6E:A8:38:CC"
 
 # Key bindings
 bindkey "^[[Z" end-of-line 
@@ -31,6 +32,7 @@ alias sp="pacman -Ss"
 alias gp="sudo pacman -S"
 alias rp="sudo pacman -Rs"
 
+# Install from Arch User Repository
 auri() {
 	for aurpkg in $@
 	do
@@ -42,13 +44,32 @@ auri() {
 	done
 }
 
+# Change time zone
+ctz() {
+	echo -e "Select \e[4;33mRegion\e[0m:"
+	REGIONS=("Africa" "America" "Antarctica" "Asia" "Australia" "Europe" "Pacific")
+	
+	select region in "${REGIONS[@]}"; do
+		SELECTED_REGION=$region
+		break
+	done
+	
+	clear
+	
+	echo -e "Select \e[4;35mCity\e[0m:"
+	CITIES=($(/bin/ls /usr/share/zoneinfo/$SELECTED_REGION))
+	
+	select city in "${CITIES[@]}"; do
+		SELECTED_CITY=$city
+		break
+	done
+	
+	sudo timedatectl set-timezone $SELECTED_REGION/$SELECTED_CITY
+}
+
 # Launch Text Editor
 vim() {
-	kitty @ set-spacing padding=0
-	kitty @ set-font-size 20
 	nvim $*
-	kitty @ set-spacing padding=default
-	kitty @ set-font-size 24
 }
 
 # Downloading files
