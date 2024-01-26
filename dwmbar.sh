@@ -101,8 +101,9 @@ volume_section=$(update_volume)
 light_section=$(update_brightness)
 
 # Initialize counters
-bat_count=0
+main_count=0
 all_count=0
+bat_count=0
 
 # Initialize all other sections
 cpu_section=$(update_cpu)
@@ -113,25 +114,32 @@ TIME=$(date +"%H:%M")
 DATE=$(date +"%a, %d %B %Y")
 
 while :; do
-	# Update battery info every 3 seconds
-	if ((bat_count == 3)); then
+	# Increment counters every second
+	if ((main_count < SECONDS)); then
+		main_count=$SECONDS
+		((all_count++))
+		((bat_count++))
+	fi
+	
+	# Update battery info every 5 seconds
+	if ((bat_count == 5)); then
 		bat_section=$(update_bat)
 		bat_count=0
 	fi
 	
-	# Update all other info every second
-	if ((all_count < SECONDS)); then
+	# Update all other info every 3 seconds
+	if ((all_count == 3)); then
 		cpu_section=$(update_cpu)
 		ram_section=$(update_ram)
 		net_section=$(update_net)
+		
 		TIME=$(date +"%H:%M")
 		DATE=$(date +"%a, %d %B %Y")
 		
-		all_count=$SECONDS
-		((bat_count++))
-		
 		R1=`cat /sys/class/net/wlan0/statistics/rx_bytes`
 		T1=`cat /sys/class/net/wlan0/statistics/tx_bytes`
+		
+		all_count=0
 	fi
 		
 	xsetroot -name " $volume_section $light_section $cpu_section $ram_section $net_section $bat_section [  $TIME ] [  $DATE ] "
