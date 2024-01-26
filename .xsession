@@ -2,15 +2,16 @@
 
 # Make sure picom is always running
 while :; do
-	if pgrep -x picom > /dev/null; then
+	if pgrep -x compfy > /dev/null; then
 		true
 	else
-		picom &
+		compfy &
 	fi
 	sleep 5
 done &
 
-# Run dwmbar script
+# Kill pre-existing dwmbar instances then run dwmbar script
+pkill -f dwmbar.sh
 sh dwmbar.sh &
 
 # Set random wallpaper based on time of day
