@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# Make sure picom is always running
+# Check every 30 seconds to make sure the compositor is always running
 while :; do
 	if pgrep -x compfy > /dev/null; then
 		true
 	else
 		compfy &
 	fi
-	sleep 5
+	sleep 30
 done &
 
-# Kill pre-existing dwmbar instances then run dwmbar script
+# Kill pre-existing dwmbar instances then run the dwmbar script
 pkill -f dwmbar.sh
 sh dwmbar.sh &
 
@@ -32,16 +32,19 @@ fi
 
 WALLPAPER=$(ls -1 $HOME/.config/wallpapers/$FOLDER/ | sort --random-sort | head -1)
 wal -i $HOME/.config/wallpapers/$FOLDER/$WALLPAPER
+feh --bg-scale $HOME/.config/wallpapers/$WALLPAPER
 
+# Build st
 cd $HOME/.config/st && sudo make clean install &
 cd $HOME
 
+# Build dmenu
 cd $HOME/.config/dmenu && sudo make clean install &
 cd $HOME
 
+# Build dwm
 sed -i '17d' $HOME/.cache/wal/colors-wal-dwm.h
 cd $HOME/.config/dwm && sudo make clean install
 cd $HOME
 
-feh --bg-scale $HOME/.config/wallpapers/$WALLPAPER
 exec dwm

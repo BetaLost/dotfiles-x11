@@ -114,11 +114,12 @@ TIME=$(date +"%H:%M")
 DATE=$(date +"%a, %d %B %Y")
 
 while :; do
-	# Increment counters every second
+	# Increment counters every second and update bar
 	if ((main_count < SECONDS)); then
 		main_count=$SECONDS
 		((all_count++))
 		((bat_count++))
+		xsetroot -name " $volume_section $light_section $cpu_section $ram_section $net_section $bat_section [  $TIME ] [  $DATE ] "
 	fi
 	
 	# Update battery info every 5 seconds
@@ -141,7 +142,8 @@ while :; do
 		
 		all_count=0
 	fi
-		
-	xsetroot -name " $volume_section $light_section $cpu_section $ram_section $net_section $bat_section [  $TIME ] [  $DATE ] "
+	
+	# Limit CPU usage
+	sleep 0.1
 done
 
