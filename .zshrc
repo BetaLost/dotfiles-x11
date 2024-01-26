@@ -2,8 +2,8 @@
 NL=$'\n'
 #PROMPT="%B%F{red}%~${NL}%F{blue}❯ %b%f"
 #PROMPT="%F{39} %f%~${NL}%F{39}❯ %b%f"
-PROMPT="%F{#66d9ef} %f%~${NL}%F{#66d9ef}❯ %b%f"
-
+#PROMPT="%F{#66d9ef} %f%~${NL}%F{#66d9ef}❯ %b%f"
+PROMPT="%F{#66d9ef} %f%~${NL}%F{#ff6188}❯%F{#ffd866}❯%F{#a9dc76}❯ %b%f"
 
 # History
 HISTFILE=~/.zsh_history
@@ -14,7 +14,6 @@ setopt appendhistory
 
 # Aliases
 alias ls="exa -l"
-alias nf="nerdfetch"
 alias build="make; sudo make clean install"
 alias rconf="source $HOME/.zshrc"
 alias cb="bluetoothctl power on; bluetoothctl agent on; bluetoothctl default-agent; bluetoothctl connect 18:B9:6E:A8:38:CC"
