@@ -38,12 +38,14 @@ feh --bg-scale $HOME/.config/wallpapers/$WALLPAPER
 cd $HOME/.config/st && sudo make clean install &
 cd $HOME
 
-# Build dmenu
+# Build dmenu and make bg color match with dwm
+ sed -i "s/\[SchemeSel\] = { \"\(.*\)\", \"\(.*\)\" },/\[SchemeSel\] = { \"\1\", \"$(awk -F'[] ="]+' '/static const char sel_bg/{print $5}' $HOME/.cache/wal/colors-wal-dwm.h)\" },/" $HOME/.cache/wal/colors-wal-dmenu.h
 cd $HOME/.config/dmenu && sudo make clean install &
 cd $HOME
 
-# Build dwm
+# Build dwm and add scheme for inactive tags
 sed -i '17d' $HOME/.cache/wal/colors-wal-dwm.h
+sed -i "/\[SchemeSel\]/a \ \ \ \ \[SchemeIdle\] = { norm_border, norm_bg,   norm_border },  \/\/ inactive tag \(no windows\)" $HOME/.cache/wal/colors-wal-dwm.h
 cd $HOME/.config/dwm && sudo make clean install
 cd $HOME
 
