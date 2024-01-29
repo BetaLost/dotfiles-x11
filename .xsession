@@ -2,10 +2,10 @@
 
 # Check every 30 seconds to make sure the compositor is always running
 while :; do
-	if pgrep -x compfy > /dev/null; then
+	if pgrep -x picom > /dev/null; then
 		true
 	else
-		compfy &
+		picom &
 	fi
 	sleep 30
 done &
@@ -45,7 +45,26 @@ cd $HOME
 
 # Build dwm and add scheme for inactive tags
 sed -i '17d' $HOME/.cache/wal/colors-wal-dwm.h
-sed -i "/\[SchemeSel\]/a \ \ \ \ \[SchemeIdle\] = { norm_border, norm_bg,   norm_border },  \/\/ inactive tag \(no windows\)" $HOME/.cache/wal/colors-wal-dwm.h
+
+color=$(grep "char norm_border" $HOME/.cache/wal/colors-wal-dwm.h | awk '{print $6}' | tr -d '";')
+factor=0.45
+
+r=$(printf "%d" "0x$(echo $color | cut -c 2-3)")
+g=$(printf "%d" "0x$(echo $color | cut -c 4-5)")
+b=$(printf "%d" "0x$(echo $color | cut -c 6-7)")
+
+r=$(echo "$r * $factor" | bc | awk '{print int($1+0.5)}')
+g=$(echo "$g * $factor" | bc | awk '{print int($1+0.5)}')
+b=$(echo "$b * $factor" | bc | awk '{print int($1+0.5)}')
+
+r=$(printf "%02x" "$r")
+g=$(printf "%02x" "$g")
+b=$(printf "%02x" "$b")
+idle_color="$r$g$b"
+
+sed -i "/char norm_border/a static const char idle_fg\[\] = \"#$idle_color\"\;" $HOME/.cache/wal/colors-wal-dwm.h
+sed -i "/\[SchemeSel\]/a \ \ \ \ \[SchemeIdle\] = { idle_fg,     norm_bg,   norm_border },  \/\/ inactive tag \(no windows\)" $HOME/.cache/wal/colors-wal-dwm.h
+
 cd $HOME/.config/dwm && sudo make clean install
 cd $HOME
 
