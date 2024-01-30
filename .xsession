@@ -1,5 +1,7 @@
 #!/bin/bash
 
+HOME=/home/chief
+
 # Check every 30 seconds to make sure the compositor is always running
 while :; do
 	if pgrep -x picom > /dev/null; then
@@ -11,11 +13,11 @@ while :; do
 done &
 
 # Kill pre-existing dwmbar instances then run the dwmbar script
+cd $HOME/.config
 pkill -f dwmbar.sh
 sh dwmbar.sh &
 
 # Set random wallpaper based on time of day
-HOME=/home/chief
 TIME=$(date +"%H")
 
 if [[ $TIME -ge 4 && $TIME -lt 6 ]]; then
