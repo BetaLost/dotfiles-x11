@@ -14,6 +14,7 @@ setopt appendhistory
 
 # Aliases
 alias ls="exa -l"
+alias vim="nvim"
 alias build="make; sudo make clean install"
 alias rconf="source $HOME/.zshrc"
 alias cb="bluetoothctl power on; bluetoothctl agent on; bluetoothctl default-agent; bluetoothctl connect 18:B9:6E:A8:38:CC"
@@ -66,14 +67,8 @@ ctz() {
 	sudo timedatectl set-timezone $SELECTED_REGION/$SELECTED_CITY
 }
 
-# Launch Text Editor
-vim() {
-	nvim $*
-}
-
 # Downloading files
-wg() { wget -O $1 --user-agent="Mozilla" $2; }
-wgm() { 
+wg() { 
 	for arg in $@
 	do
 		arr=(${(s. .)arg})
