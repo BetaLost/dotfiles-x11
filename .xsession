@@ -70,7 +70,11 @@ sed -i "/\[SchemeSel\]/a \ \ \ \ \[SchemeIdle\] = { idle_fg,     norm_bg,   norm
 # -- END DWM CONFIGURATION --
 
 # Build dmenu and make bg color match with dwm
- sed -i "s/\[SchemeSel\] = { \"\(.*\)\", \"\(.*\)\" },/\[SchemeSel\] = { \"\1\", \"$(awk -F'[] ="]+' '/static const char sel_fg/{print $5}' $HOME/.cache/wal/colors-wal-dwm.h)\" },/" $HOME/.cache/wal/colors-wal-dmenu.h
+sed -i "s/\[SchemeSel\] = { \"\(.*\)\", \"\(.*\)\" },/\[SchemeSel\] = { \"\1\", \"$(awk -F'[] ="]+' '/static const char sel_fg/{print $5}' $HOME/.cache/wal/colors-wal-dwm.h)\" },/" $HOME/.cache/wal/colors-wal-dmenu.h
+
+bg_color=$(awk '/SchemeNorm/ {print $5}' $HOME/.cache/wal/colors-wal-dmenu.h)
+sed -i "s/\[SchemeSel\] = { \(.*\), \(.*\)/\[SchemeSel\] = { $bg_color, \2/" $HOME/.cache/wal/colors-wal-dmenu.h
+
 cd $HOME/.config/dmenu && sudo make clean install &
 cd $HOME
 
