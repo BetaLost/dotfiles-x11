@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOME=/home/chief
+#HOME=/home/chief
 
 # Check every 30 seconds to make sure the compositor is always running
 while :; do
@@ -12,11 +12,6 @@ while :; do
 	sleep 30
 done &
 
-# Kill pre-existing dwmbar instances then run the dwmbar script
-cd $HOME/.config
-pkill -f dwmbar.sh
-sh dwmbar.sh &
-cd $HOME
 
 # Set random wallpaper based on time of day and generate colorscheme
 TIME=$(date +"%H")
@@ -36,6 +31,12 @@ fi
 WALLPAPER=$(ls -1 $HOME/.config/wallpapers/$FOLDER/ | sort --random-sort | head -1)
 wal -i $HOME/.config/wallpapers/$FOLDER/$WALLPAPER
 feh --bg-scale $HOME/.config/wallpapers/$WALLPAPER
+
+# Kill pre-existing dwmbar instances then run the dwmbar script
+cd $HOME/.config
+pkill -f dwmbar.sh
+sh dwmbar.sh &
+cd $HOME
 
 # -- CONFIGURE DWM COLORSCHEME --
 
@@ -69,7 +70,7 @@ sed -i "/\[SchemeSel\]/a \ \ \ \ \[SchemeIdle\] = { idle_fg,     norm_bg,   norm
 
 # -- END DWM CONFIGURATION --
 
-# Build dmenu and make bg color match with dwm
+# Build dmenu and make colors match with dwm
 sed -i "s/\[SchemeSel\] = { \"\(.*\)\", \"\(.*\)\" },/\[SchemeSel\] = { \"\1\", \"$(awk -F'[] ="]+' '/static const char sel_fg/{print $5}' $HOME/.cache/wal/colors-wal-dwm.h)\" },/" $HOME/.cache/wal/colors-wal-dmenu.h
 
 bg_color=$(awk '/SchemeNorm/ {print $5}' $HOME/.cache/wal/colors-wal-dmenu.h)
