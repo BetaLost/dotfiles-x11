@@ -6,10 +6,10 @@ NET_INTERFACE="wlan0"
 
 # Set colorscheme
 icon_bg=$(sed -n "10p" < $HOME/.cache/wal/colors)
-sel_fg=$(sed -n "7p" < $HOME/.cache/wal/colors)
+text_bg=$(sed -n "7p" < $HOME/.cache/wal/colors)
 norm_bg=$(sed -n "1p" < $HOME/.cache/wal/colors)
 icon_scheme="^c$norm_bg^^b$icon_bg^"
-text_scheme="^d^^c$norm_bg^^b$sel_fg^"
+text_scheme="^d^^c$norm_bg^^b$text_bg^"
 
 update_volume() {
 	VOL=$(pulsemixer --get-volume | cut -f 1 -d " ")

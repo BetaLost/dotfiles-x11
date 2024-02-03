@@ -44,7 +44,7 @@ cd $HOME
 sed -i '9d;10d;11d;12d;17d' $HOME/.cache/wal/colors-wal-dwm.h
 
 # Indicate selected tag with a different fg color rather than a different bg color
-sel_fg=$(sed -n "7p" < $HOME/.cache/wal/colors)
+sel_fg=$(sed -n "10p" < $HOME/.cache/wal/colors)
 sed -i "s/static const char sel_fg\[\] = \".*\"/static const char sel_fg\[\] = \"$sel_fg\"/" $HOME/.cache/wal/colors-wal-dwm.h
 sed -i "s/\[SchemeSel\]  = { sel_fg,      sel_bg,    sel_border },  \/\/ the focused win/\[SchemeSel\]  = { sel_fg,      norm_bg,   sel_border },  \/\/ the focused win/" $HOME/.cache/wal/colors-wal-dwm.h
 
