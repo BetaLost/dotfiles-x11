@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#HOME=/home/chief
-
-# Check every 30 seconds to make sure the compositor is always running
+# Kill pre-existing instances of this loop then run a new loop to make sure the compositor is always running
+ps fjx | grep "bash -c  while :; do" | awk 'NR>1 {print $2}' | xargs kill
+bash -c '
 while :; do
 	if pgrep -x picom > /dev/null; then
 		true
@@ -11,7 +11,7 @@ while :; do
 	fi
 	sleep 30
 done &
-
+'
 
 # Set random wallpaper based on time of day and generate colorscheme
 TIME=$(date +"%-H")
@@ -36,7 +36,6 @@ feh --bg-scale $HOME/.config/wallpapers/$FOLDER/$WALLPAPER
 cd $HOME/.config
 pkill -f dwmbar.sh
 sh dwmbar.sh &
-cd $HOME
 
 # -- CONFIGURE DWM COLORSCHEME --
 
@@ -81,11 +80,9 @@ sed -i "/\[SchemeOut\]/a \ \ \ \ \[SchemeNormHighlight\] = { "$bg_color", "$bg_c
 sed -i "s/\[SchemeOut\]/\[SchemeSelHighlight\]/" $HOME/.cache/wal/colors-wal-dmenu.h
 
 cd $HOME/.config/dmenu && sudo make clean install &
-cd $HOME
 
 # Build st
 cd $HOME/.config/st && sudo make clean install &
-cd $HOME
 
 # Build dwm
 cd $HOME/.config/dwm && sudo make clean install
