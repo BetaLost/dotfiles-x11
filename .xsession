@@ -14,7 +14,7 @@ done &
 
 
 # Set random wallpaper based on time of day and generate colorscheme
-TIME=$(date +"%H")
+TIME=$(date +"%-H")
 
 if [[ $TIME -ge 4 && $TIME -lt 6 ]]; then
 	FOLDER=dawn
@@ -30,7 +30,7 @@ fi
 
 WALLPAPER=$(ls -1 $HOME/.config/wallpapers/$FOLDER/ | sort --random-sort | head -1)
 wal -i $HOME/.config/wallpapers/$FOLDER/$WALLPAPER
-feh --bg-scale $HOME/.config/wallpapers/$WALLPAPER
+feh --bg-scale $HOME/.config/wallpapers/$FOLDER/$WALLPAPER
 
 # Kill pre-existing dwmbar instances then run the dwmbar script
 cd $HOME/.config
