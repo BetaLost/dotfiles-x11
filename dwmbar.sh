@@ -43,10 +43,18 @@ update_brightness() {
 }
 
 update_cpu() {
-	CPU=$(grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage "%"}')
+	CPUSTAT=$(grep 'cpu ' /proc/stat)
+	
+	IDLE2=$(echo "$CPUSTAT" | awk '{print $5}')
+	TOTAL2=$(echo "$CPUSTAT" | awk '{total = $2 + $3 + $4 + $5 + $6 + $7 + $8} END {print total}')
+	
+	IDLE_DIFF=$((IDLE2 - IDLE1))
+	TOTAL_DIFF=$((TOTAL2 - TOTAL1))
+	
+	CPU_USAGE=$(awk "BEGIN {print (1 - $IDLE_DIFF / $TOTAL_DIFF) * 100}")
 	CPU_TEMP=$(sed 's/000$/°C/' /sys/class/thermal/thermal_zone0/temp)
 	
-	echo "$icon_scheme  $text_scheme ${CPU%.*}% ($CPU_TEMP) ^d^"
+	echo "$icon_scheme  $text_scheme ${CPU_USAGE%.*}% ($CPU_TEMP) ^d^"
 }
 
 update_ram() {
@@ -61,11 +69,6 @@ update_ram() {
 }
 
 update_net() {
-	if [[ -z $T1 ]]; then
-		R1=`cat /sys/class/net/$NET_INTERFACE/statistics/rx_bytes`
-		T1=`cat /sys/class/net/$NET_INTERFACE/statistics/tx_bytes`
-	fi
-	
 	R2=`cat /sys/class/net/$NET_INTERFACE/statistics/rx_bytes`
 	T2=`cat /sys/class/net/$NET_INTERFACE/statistics/tx_bytes`
 	TBPS=`expr $T2 - $T1`
@@ -126,6 +129,10 @@ trap "light_sig" SIGUSR2
 volume_section=$(update_volume)
 light_section=$(update_brightness)
 
+# Initialize network data
+R1=`cat /sys/class/net/$NET_INTERFACE/statistics/rx_bytes`
+T1=`cat /sys/class/net/$NET_INTERFACE/statistics/tx_bytes`
+
 # Initialize counters
 main_count=0
 all_count=0
@@ -149,7 +156,6 @@ update_status(){
 	
 	# Draw Status
 	xsetroot -name " $volume_section $light_section $cpu_section $ram_section $net_section $bat_section $icon_scheme  $text_scheme $TIME ^d^ $icon_scheme  $text_scheme $DATE ^d^ "
-	
 }
 
 # Initialize status
@@ -175,6 +181,10 @@ while :; do
 		
 		R1=`cat /sys/class/net/$NET_INTERFACE/statistics/rx_bytes`
 		T1=`cat /sys/class/net/$NET_INTERFACE/statistics/tx_bytes`
+		
+		CPUSTAT=$(grep 'cpu ' /proc/stat)
+		IDLE1=$(echo "$CPUSTAT" | awk '{print $5}')
+		TOTAL1=$(echo "$CPUSTAT" | awk '{total = $2 + $3 + $4 + $5 + $6 + $7 + $8} END {print total}')
 		
 		all_count=0
 	fi
