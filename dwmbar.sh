@@ -21,7 +21,7 @@ update_volume() {
 		VOL_ICON="墳"
 	fi
 	
-	echo "$icon_scheme $VOL_ICON $text_scheme $VOL% ^d^"
+	echo "$icon_scheme^l^$VOL_ICON $text_scheme $VOL%^e^^d^"
 }
 
 update_brightness() {
@@ -39,7 +39,7 @@ update_brightness() {
 		BRIGHT_ICON="󰃠"
 	fi
 	
-	echo "$icon_scheme $BRIGHT_ICON $text_scheme ${PERCENTAGE%.*}% ^d^"
+	echo "$icon_scheme^l^$BRIGHT_ICON $text_scheme ${PERCENTAGE%.*}%^e^^d^"
 }
 
 update_cpu() {
@@ -54,7 +54,7 @@ update_cpu() {
 	CPU_USAGE=$(awk "BEGIN {print (1 - $IDLE_DIFF / $TOTAL_DIFF) * 100}")
 	CPU_TEMP=$(sed 's/000$/°C/' /sys/class/thermal/thermal_zone0/temp)
 	
-	echo "$icon_scheme  $text_scheme ${CPU_USAGE%.*}% ($CPU_TEMP) ^d^"
+	echo "$icon_scheme^l^ $text_scheme ${CPU_USAGE%.*}% ($CPU_TEMP)^e^^d^"
 }
 
 update_ram() {
@@ -62,9 +62,9 @@ update_ram() {
 	
 	if ((MEMORY > 1024)); then
 		MEMORY=$(echo "scale=2; $MEMORY / 1024" | bc)
-		echo "$icon_scheme RAM $text_scheme $MEMORY GiB ^d^"
+		echo "$icon_scheme^l^RAM $text_scheme $MEMORY GiB^e^^d^"
 	else
-		echo "$icon_scheme RAM $text_scheme $MEMORY MiB ^d^"
+		echo "$icon_scheme^l^RAM $text_scheme $MEMORY MiB^e^^d^"
 	fi
 }
 
@@ -76,7 +76,7 @@ update_net() {
 	TKBPS=`expr $TBPS / 1024`
 	RKBPS=`expr $RBPS / 1024`
 	
-	echo "$icon_scheme  $text_scheme $RKBPS KiB ^d^$icon_scheme  $text_scheme $TKBPS KiB ^d^"
+	echo "$icon_scheme^l^ $text_scheme $RKBPS KiB ^d^$icon_scheme  $text_scheme $TKBPS KiB^e^^d^"
 }
 
 update_bat() {
@@ -109,7 +109,7 @@ update_bat() {
 		BAT_ICON=""
 	fi
 	
-	echo "$icon_scheme $BAT_ICON $text_scheme $CUR_BAT% ^d^"
+	echo "$icon_scheme^l^$BAT_ICON $text_scheme $CUR_BAT%^e^^d^"
 }
 
 vol_sig() {
@@ -155,7 +155,7 @@ update_status(){
 	fi
 	
 	# Draw Status
-	xsetroot -name " $volume_section $light_section $cpu_section $ram_section $net_section $bat_section $icon_scheme  $text_scheme $TIME ^d^ $icon_scheme  $text_scheme $DATE ^d^ "
+	xsetroot -name " $volume_section $light_section $cpu_section $ram_section $net_section $bat_section $icon_scheme^l^ $text_scheme $TIME^e^^d^ $icon_scheme^l^ $text_scheme $DATE^e^^d^ "
 }
 
 # Initialize status
