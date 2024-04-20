@@ -159,9 +159,10 @@ update_status(){
 		bat_section=$(update_bat)
 	fi
 	
+	# Update Prayer Time
 	if [ "$3" = 1 ]; then
 		PRAYER_NAME=$(bash $HOME/.config/prayer.sh 1)
-		prayer_section="$icon_scheme^l^۩ $text_scheme $PRAYER_NAME^e^^d^"
+		prayer_section="$icon_scheme^l^󰥹 $text_scheme $PRAYER_NAME^e^^d^"
 	fi
 	
 	# Draw Status
@@ -200,7 +201,7 @@ while :; do
 		all_count=0
 	fi
 	
-	# Check prayer time
+	# Update prayer time every 45 seconds
 	if ((prayer_count == 45)); then
 		update_status 0 0 1
 		prayer_count=0
