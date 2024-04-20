@@ -179,6 +179,7 @@ while :; do
 		main_count=$SECONDS
 		((all_count++))
 		((bat_count++))
+		((prayer_count++))
 	fi
 	
 	# Update battery info every 5 seconds
