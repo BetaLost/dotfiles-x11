@@ -137,7 +137,9 @@ T1=`cat /sys/class/net/$NET_INTERFACE/statistics/tx_bytes`
 main_count=0
 all_count=0
 bat_count=0
+prayer_count=0
 
+# Arguments (0, 1): main info, battery, prayer time
 update_status(){
 	# Update main info
 	if [ "$1" = 1 ]; then
@@ -147,6 +149,9 @@ update_status(){
 		
 		TIME=$(date +"%H:%M")
 		DATE=$(date +"%a, %d %B %Y")
+		
+		time_section="$icon_scheme^l^ $text_scheme $TIME^e^^d^"
+		date_section="$icon_scheme^l^ $text_scheme $DATE^e^^d^"
 	fi
 	
 	# Update Battery
@@ -154,14 +159,20 @@ update_status(){
 		bat_section=$(update_bat)
 	fi
 	
+	if [ "$3" = 1 ]; then
+		PRAYER_NAME=$(bash $HOME/.config/prayer.sh 1)
+		prayer_section="$icon_scheme^l^۩ $text_scheme $PRAYER_NAME^e^^d^"
+	fi
+	
 	# Draw Status
-	xsetroot -name " $volume_section $light_section $cpu_section $ram_section $net_section $bat_section $icon_scheme^l^ $text_scheme $TIME^e^^d^ $icon_scheme^l^ $text_scheme $DATE^e^^d^ "
+	xsetroot -name " $volume_section $light_section $cpu_section $ram_section $net_section $bat_section $prayer_section $time_section $date_section "
 }
 
 # Initialize status
-update_status 1 1
+update_status 1 1 1
 
 while :; do
+	echo $main_count $SECONDS
 	# Increment counters every second
 	if ((main_count < SECONDS)); then
 		main_count=$SECONDS
@@ -171,13 +182,13 @@ while :; do
 	
 	# Update battery info every 5 seconds
 	if ((bat_count == 5)); then
-		update_status 0 1
+		update_status 0 1 0
 		bat_count=0
 	fi
 	
 	# Update all other info every 3 seconds
 	if ((all_count == 3)); then
-		update_status 1 0
+		update_status 1 0 0
 		
 		R1=`cat /sys/class/net/$NET_INTERFACE/statistics/rx_bytes`
 		T1=`cat /sys/class/net/$NET_INTERFACE/statistics/tx_bytes`
@@ -187,6 +198,12 @@ while :; do
 		TOTAL1=$(echo "$CPUSTAT" | awk '{total = $2 + $3 + $4 + $5 + $6 + $7 + $8} END {print total}')
 		
 		all_count=0
+	fi
+	
+	# Check prayer time
+	if ((prayer_count == 45)); then
+		update_status 0 0 1
+		prayer_count=0
 	fi
 	
 	# Limit CPU usage
