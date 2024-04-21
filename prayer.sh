@@ -22,19 +22,32 @@ while IFS= read -r line; do
 		CURRENT_PRAYER="$PRAYER_NAME"
 	elif [[ "$CURRENT_TIME" < "$PRAYER_TIME" ]]; then
 		NEXT_PRAYER="$PRAYER_NAME"
+		NEXT_PRAYER_TIME="$PRAYER_TIME"
 		break
 	fi
 done < "$HOME/.config/prayerhistory/$CURRENT_DATE.txt"
+
 
 if [[ -z "$CURRENT_PRAYER" ]]; then
 	CURRENT_PRAYER="Qiyam"
 fi
 
 if [[ "$1" == "1" ]]; then
-	printf "$CURRENT_PRAYER"
+	if [[ -n "$NEXT_PRAYER" ]]; then
+		TIME_REMAINING=$(printf '%02d:%02d\n' "$(((d=(${NEXT_PRAYER_TIME/:/*60+})-(${CURRENT_TIME/:/*60+})),d/60))" "$((d%60))")
+		printf "$CURRENT_PRAYER ($TIME_REMAINING to $NEXT_PRAYER)"
+	else
+		printf "$CURRENT_PRAYER"
+	fi
 else
 	cat "$HOME/.config/prayerhistory/$CURRENT_DATE.txt"
 	echo "Current prayer: $CURRENT_PRAYER"
-	echo "Next prayer: $NEXT_PRAYER"
+	
+	if [[ -n "$NEXT_PRAYER" ]]; then
+		TIME_REMAINING=$(printf '%02d:%02d\n' "$(((d=(${NEXT_PRAYER_TIME/:/*60+})-(${CURRENT_TIME/:/*60+})),d/60))" "$((d%60))")
+		echo "Next prayer: $NEXT_PRAYER in $TIME_REMAINING"
+	else
+		echo "Next prayer: $NEXT_PRAYER"
+	fi
 fi
 
