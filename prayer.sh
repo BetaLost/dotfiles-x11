@@ -40,13 +40,22 @@ if [[ -z "$CURRENT_PRAYER" ]]; then
 	CURRENT_PRAYER="Qiyam"
 fi
 
-if [[ "$1" == "1" ]]; then
+if [[ "$1" == "-r" ]]; then
 	if [[ -n "$NEXT_PRAYER" ]]; then
 		TIME_REMAINING=$(duration $CURRENT_TIME $NEXT_PRAYER_TIME)
 		printf "$CURRENT_PRAYER ($TIME_REMAINING to $NEXT_PRAYER)"
 	else
 		printf "$CURRENT_PRAYER"
 	fi
+elif [[ "$1" == "-n" ]]; then
+	printf "$CURRENT_PRAYER"
+elif [[ "$1" == "-h" ]]; then
+	today=$(curl -Ls "https://api.aladhan.com/v1/gToH/$CURRENT_DATE" | jq .data.hijri)
+	day=$(echo $today | jq .day)
+	month=$(echo $today | jq .month.en)
+	year=$(echo $today | jq .year)
+	
+	printf "$(date +%a), ${day//\"/} ${month//\"/} ${year//\"/}"
 else
 	cat "$HOME/.config/prayerhistory/$CURRENT_DATE.txt"
 	echo "Current prayer: $CURRENT_PRAYER"
