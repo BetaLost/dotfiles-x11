@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CITY="Sharjah"
-COUNTRY="AE"
+CITY=""
+COUNTRY=""
 
 CURRENT_TIME=$(date +"%H:%M")
 CURRENT_DATE=$(date +"%d-%m-%Y")
