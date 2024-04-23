@@ -2,15 +2,15 @@ BACKLIGHT="intel_backlight"
 
 vol_notif() {
 	VOL=$(pulsemixer --get-volume | cut -f 1 -d " ")
-	notify-send "Volume: $VOL%" -h int:value:"$VOL" -r 1
+	dunstify "Volume: $VOL%" -h int:value:"$VOL" -r 1
 }
 
 mute_notif() {
 	MUTE_STAT=$(pulsemixer --get-mute)
 	if [[ $MUTE_STAT == "1" ]]; then
-		notify-send "Muted Audio 婢" -r 2
+		dunstify "Muted Audio 婢" -r 2
 	else
-		notify-send "Unmuted Audio 墳" -r 2
+		dunstify "Unmuted Audio 墳" -r 2
 	fi
 }
 
@@ -19,7 +19,7 @@ light_notif() {
 	MAX_BRIGHTNESS=$(cat /sys/class/backlight/$BACKLIGHT/max_brightness)
 	PERCENTAGE=$((BRIGHTNESS * 100 / MAX_BRIGHTNESS))
 	
-	notify-send "Brightness: $PERCENTAGE%" -h int:value:"$PERCENTAGE" -r 3
+	dunstify "Brightness: $PERCENTAGE%" -h int:value:"$PERCENTAGE" -r 3
 }
 
 case "$1" in
