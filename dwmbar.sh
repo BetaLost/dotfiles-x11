@@ -109,10 +109,16 @@ update_bat() {
 	CUR_BAT=$(cat /sys/class/power_supply/BAT*/capacity)
 	BAT_STAT=$(cat /sys/class/power_supply/BAT*/status)
 	
-	if [[ $BAT_STAT == "Charging" ]]; then BAT_ICON=""; else
+	if [[ $BAT_STAT == "Charging" ]]; then
+		BAT_ICON="";
+		
+		if [[ $PREV_BAT_STAT == "Discharging" && $CUR_BAT < 20 ]]; then
+			dunstctl close
+		fi
+	else
 		case $CUR_BAT in
-			[0-9]) BAT_ICON=""; notify-send --urgency=critical "$CUR_BAT%: Low Battery!";;
-			[1][0-9]) BAT_ICON=""; notify-send --urgency=critical "$CUR_BAT%: Low Battery!";;
+			[0-9]) BAT_ICON=""; notify-send --urgency=critical "$CUR_BAT%: Low Battery!" -r 4;;
+			[1][0-9]) BAT_ICON=""; notify-send --urgency=critical "$CUR_BAT%: Low Battery!" -r 4;;
 			[2][0-9]) BAT_ICON="";;
 			[3][0-9]) BAT_ICON="";;
 			[4][0-9]) BAT_ICON="";;
@@ -181,7 +187,7 @@ trap "light_sig" SIGUSR2
 trap "notify-send ignore" SIGRTMIN+2
 
 # Toggle volume section
-trap "pulsemixer --toggle-mute; vol_sig" SIGRTMIN+1
+trap "bash $HOME/.config/utilities.sh --mutevol" SIGRTMIN+1
 
 # Toggle CPU section
 cpu_toggle=0
@@ -241,6 +247,7 @@ update_status(){
 	# Update Battery
 	if [ "$2" = 1 ]; then
 		bat_section=$(update_bat)
+		PREV_BAT_STAT=$(cat /sys/class/power_supply/BAT*/status)
 	fi
 	
 	# Update Prayer Time
