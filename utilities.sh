@@ -8,9 +8,9 @@ vol_notif() {
 mute_notif() {
 	MUTE_STAT=$(pulsemixer --get-mute)
 	if [[ $MUTE_STAT == "1" ]]; then
-		dunstify "Muted Audio 婢" -r 2
+		dunstify "婢 Muted Audio" -r 2
 	else
-		dunstify "Unmuted Audio 墳" -r 2
+		dunstify "墳 Unmuted Audio" -r 2
 	fi
 }
 
