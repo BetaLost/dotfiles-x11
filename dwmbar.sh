@@ -191,7 +191,7 @@ trap "if ((cpu_toggle)) then cpu_toggle=0; else cpu_toggle=1; fi; update_status 
 ram_toggle=0
 trap "if ((ram_toggle)) then ram_toggle=0; else ram_toggle=1; fi; update_status 1 0 0" SIGRTMIN+4
 
-# Toggle RAM section
+# Toggle network section
 net_toggle=0
 trap "if ((net_toggle)) then net_toggle=0; else net_toggle=1; fi; update_status 1 0 0" SIGRTMIN+5
 
@@ -298,4 +298,3 @@ while :; do
 	# Limit CPU usage
 	sleep 0.1
 done
-
