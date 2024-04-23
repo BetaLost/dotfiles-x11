@@ -84,7 +84,25 @@ update_net() {
 	TKBPS=`expr $TBPS / 1024`
 	RKBPS=`expr $RBPS / 1024`
 	
-	echo "$icon_scheme^l^ $text_scheme $RKBPS KiB ^d^$icon_scheme  $text_scheme $TKBPS KiB^e^^d^"
+	if ((net_toggle)); then
+		echo "$icon_scheme^l^ $text_scheme $RKBPS KiB ^d^$icon_scheme  $text_scheme $TKBPS KiB^e^^d^"
+	else
+		if ((RKBPS > 1024)); then
+			RKBPS=$(echo "scale=2; $RKBPS / 1024" | bc)
+			UP="$RKBPS MiB"
+		else
+			UP="$RKBPS KiB"
+		fi
+		
+		if ((TKBPS > 1024)); then
+			TKBPS=$(echo "scale=2; $TKBPS / 1024" | bc)
+			DOWN="$TKBPS MiB"
+		else
+			DOWN="$TKBPS KiB"
+		fi
+		
+		echo "$icon_scheme^l^ $text_scheme $UP ^d^$icon_scheme  $text_scheme $DOWN^e^^d^"
+	fi
 }
 
 update_bat() {
@@ -159,8 +177,8 @@ light_sig() {
 trap "vol_sig" SIGUSR1
 trap "light_sig" SIGUSR2
 
-# Ignore signals from these sections: brightness, network
-trap "notify-send ignore" SIGRTMIN+2 SIGRTMIN+5
+# Ignore signals from the brightness section
+trap "notify-send ignore" SIGRTMIN+2
 
 # Toggle volume section
 trap "pulsemixer --toggle-mute; vol_sig" SIGRTMIN+1
@@ -172,6 +190,10 @@ trap "if ((cpu_toggle)) then cpu_toggle=0; else cpu_toggle=1; fi; update_status 
 # Toggle RAM section
 ram_toggle=0
 trap "if ((ram_toggle)) then ram_toggle=0; else ram_toggle=1; fi; update_status 1 0 0" SIGRTMIN+4
+
+# Toggle RAM section
+net_toggle=0
+trap "if ((net_toggle)) then net_toggle=0; else net_toggle=1; fi; update_status 1 0 0" SIGRTMIN+5
 
 # Toggle battery section
 battery_toggle=0
