@@ -17,7 +17,6 @@ alias ls="exa -l"
 alias vim="nvim"
 alias build="make; sudo make clean install"
 alias rconf="source $HOME/.zshrc"
-alias cb="bluetoothctl power on; bluetoothctl agent on; bluetoothctl default-agent; bluetoothctl connect 18:B9:6E:A8:38:CC; pkill -SIGUSR1 -f dwmbar.sh"
 
 # Key bindings
 bindkey "^[[Z" end-of-line 

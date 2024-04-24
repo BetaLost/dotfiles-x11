@@ -268,12 +268,25 @@ update_status 1 1 1
 HIJRI_DATE=$(bash $HOME/.config/prayer.sh -h)
 
 while :; do
-	# Increment counters every second
+	# Increment counters and check bluetooth connection every second
 	if ((main_count < SECONDS)); then
 		main_count=$SECONDS
 		((all_count++))
 		((bat_count++))
 		((prayer_count++))
+		
+		# Check if a bluetooth device is connected
+		BLUE_DEV=$(bluetoothctl info | grep "Name" | awk -F': ' '{print $2}')
+		
+		if [[ -n $BLUE_DEV && -z $PREV_BLUE_DEV ]]; then
+			dunstify "󰥰 Connected: $BLUE_DEV"
+			vol_sig
+		elif [[ -z $BLUE_DEV && -n $PREV_BLUE_DEV ]]; then
+			dunstify "󰽟 Disconnected: $PREV_BLUE_DEV"
+			vol_sig
+		fi
+		
+		PREV_BLUE_DEV=$(bluetoothctl info | grep "Name" | awk -F': ' '{print $2}')
 	fi
 	
 	# Update battery info every 5 seconds
@@ -294,6 +307,7 @@ while :; do
 		TOTAL1=$(echo "$CPUSTAT" | awk '{total = $2 + $3 + $4 + $5 + $6 + $7 + $8} END {print total}')
 		
 		all_count=0
+		
 	fi
 	
 	# Update prayer time every 30 seconds
