@@ -117,8 +117,8 @@ update_bat() {
 		fi
 	else
 		case $CUR_BAT in
-			[0-9]) BAT_ICON=""; dunstify --urgency=critical "$CUR_BAT%: Low Battery!" -r 4;;
-			[1][0-9]) BAT_ICON=""; dunstify --urgency=critical "$CUR_BAT%: Low Battery!" -r 4;;
+			[0-9]) BAT_ICON=""; dunstify --urgency=critical "$BAT_ICON $CUR_BAT%: Low Battery!" -r 4;;
+			[1][0-9]) BAT_ICON=""; dunstify --urgency=critical "$BAT_ICON $CUR_BAT%: Low Battery!" -r 4;;
 			[2][0-9]) BAT_ICON="";;
 			[3][0-9]) BAT_ICON="";;
 			[4][0-9]) BAT_ICON="";;
@@ -307,7 +307,6 @@ while :; do
 		TOTAL1=$(echo "$CPUSTAT" | awk '{total = $2 + $3 + $4 + $5 + $6 + $7 + $8} END {print total}')
 		
 		all_count=0
-		
 	fi
 	
 	# Update prayer time every 30 seconds
