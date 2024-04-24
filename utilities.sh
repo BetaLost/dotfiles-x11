@@ -1,4 +1,5 @@
-BACKLIGHT="intel_backlight"
+BACKLIGHT="_BACKLIGHT_"
+BLUE_MAC_ADDRESS="18:B9:6E:A8:38:CC"
 
 vol_notif() {
 	VOL=$(pulsemixer --get-volume | cut -f 1 -d " ")
@@ -52,7 +53,7 @@ case "$1" in
 	"--mutevol" ) pulsemixer --toggle-mute && pkill -SIGUSR1 -f dwmbar.sh && mute_notif;;
 	"--uplight" ) brightnessctl s 1%+ && pkill -SIGUSR2 -f dwmbar.sh && light_notif;;
 	"--downlight" ) brightnessctl s 1%-  && pkill -SIGUSR2 -f dwmbar.sh && light_notif;;
-	"--connectblue" ) bluetoothctl power on; bluetoothctl agent on; bluetoothctl default-agent; bluetoothctl disconnect 18:B9:6E:A8:38:CC; bluetoothctl connect 18:B9:6E:A8:38:CC;;
+	"--connectblue" ) bluetoothctl power on; bluetoothctl agent on; bluetoothctl default-agent; bluetoothctl disconnect $BLUE_MAC_ADDRESS; bluetoothctl connect $BLUE_MAC_ADDRESS;;
 	"--checkbat" ) blue_notif;;
 	"--weather" ) st -c floatst -g 45x8 -e sh -c "curl wttr.in/?0; read";; 
 	"--clock" ) st -c floatst -g 56x9 -e sh -c "tty-clock -scC 1";;

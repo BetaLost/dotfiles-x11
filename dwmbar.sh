@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Hardware
-BACKLIGHT="intel_backlight"
-NET_INTERFACE="wlan0"
+BACKLIGHT="_BACKLIGHT_"
+NET_INTERFACE="_NET_"
 
 # Set colorscheme
 icon_bg=$(sed -n "10p" < $HOME/.cache/wal/colors)
