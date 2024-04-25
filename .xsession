@@ -15,17 +15,32 @@ done &
 
 # Set random wallpaper based on time of day and generate colorscheme
 TIME=$(date +"%-H")
+DATE=$(date +"%d-%m-%Y")
 
-if [[ $TIME -ge 4 && $TIME -lt 7 ]]; then
-	FOLDER=dawn
-elif [[ $TIME -ge 7 && $TIME -lt 11 ]]; then
-	FOLDER=morning
-elif [[ $TIME -ge 11 && $TIME -lt 16 ]]; then
-	FOLDER=noon
-elif [[ $TIME -ge 16 && $TIME -lt 19 ]]; then
-	FOLDER=sunset
-elif [[ $TIME -ge 19 ]] || [[ $TIME -lt 4 ]]; then
-	FOLDER=night
+if [[ -f "$HOME/.config/prayerhistory/$DATE.txt" ]]; then
+	PRAYER_NAME=$(bash $HOME/.config/prayer.sh -n)
+	case $PRAYER_NAME in
+		"Fajr") FOLDER="dawn";;
+		"Sunrise") FOLDER="morning";;
+		"Dhuhr") FOLDER="noon";;
+		"Asr") FOLDER="afternoon";;
+		"Maghrib") FOLDER="sunset";;
+		"Isha" | "Qiyam") FOLDER="night";;
+	esac
+else
+	if [[ $TIME -ge 4 && $TIME -lt 7 ]]; then
+		FOLDER="dawn"
+	elif [[ $TIME -ge 7 && $TIME -lt 11 ]]; then
+		FOLDER="morning"
+	elif [[ $TIME -ge 11 && $TIME -lt 15 ]]; then
+		FOLDER="noon"
+	elif [[ $TIME -ge 15 && $TIME -lt 18 ]]; then
+		FOLDER="afternoon"
+	elif [[ $TIME -ge 18 && $TIME -lt 20 ]]; then
+		FOLDER="sunset"
+	elif [[ $TIME -ge 20 ]] || [[ $TIME -lt 4 ]]; then
+		FOLDER="night"
+	fi
 fi
 
 #WALLPAPER=$(ls -1 $HOME/.config/wallpapers/$FOLDER/ | sort --random-sort | head -1)
