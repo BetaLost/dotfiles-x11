@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Hardware
-BACKLIGHT="_BACKLIGHT_"
-NET_INTERFACE="_NET_"
+BACKLIGHT="intel_backlight"
+NET_INTERFACE="wlan0"
 
 # Set colorscheme
 icon_bg=$(sed -n "10p" < $HOME/.cache/wal/colors)
@@ -219,7 +219,7 @@ trap "if ((date_toggle)) then date_toggle=0; else date_toggle=1; fi; update_stat
 
 # Power menu
 power_menu() {
-	ACTION=$(printf "⏻ Shutdown\n Reboot\n󰤄 Sleep" | dmenu -i -c -l 3 -z 250 -fn "JetBrains Mono Nerd Font:size=14")
+	ACTION=$(printf "⏻ Shutdown\n Reboot\n󰤄 Sleep" | dmenu -i -c -d -l 3 -z 250 -p "󰐦 Power Menu")
 	
 	if [[ $ACTION == "⏻ Shutdown" ]]; then
 		shutdown now
