@@ -84,8 +84,9 @@ update_net() {
 	TKBPS=`expr $TBPS / 1024`
 	RKBPS=`expr $RBPS / 1024`
 	
-	if ((net_toggle)); then
-		echo "$icon_scheme^l^ $text_scheme $RKBPS KiB ^d^$icon_scheme  $text_scheme $TKBPS KiB^e^^d^"
+	if ((net_toggle || (TKBPS == 0 && RKBPS == 0))); then
+ 		SSID=$(iwgetid -r)
+		echo "$icon_scheme^l^󰖩 $text_scheme $SSID^e^^d^"
 	else
 		if ((RKBPS > 1024)); then
 			RKBPS=$(echo "scale=2; $RKBPS / 1024" | bc)
