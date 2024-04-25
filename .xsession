@@ -47,6 +47,9 @@ sel_fg=$(sed -n "10p" < $HOME/.cache/wal/colors)
 sed -i "s/static const char sel_fg\[\] = \".*\"/static const char sel_fg\[\] = \"$sel_fg\"/" $HOME/.cache/wal/colors-wal-dwm.h
 sed -i "s/\[SchemeSel\]  = { sel_fg,      sel_bg,    sel_border },  \/\/ the focused win/\[SchemeSel\]  = { sel_fg,      norm_bg,   sel_border },  \/\/ the focused win/" $HOME/.cache/wal/colors-wal-dwm.h
 
+# Change border color of focused window
+sed -i "s/\[SchemeSel\]  = { sel_fg,      norm_bg,   sel_border },  \/\/ the focused win/\[SchemeSel\]  = { sel_fg,      norm_bg,   sel_fg },  \/\/ the focused win/" $HOME/.cache/wal/colors-wal-dwm.h
+
 # Add a colorscheme for inactive tags (dimmed fg)
 color=$(grep "char norm_border" $HOME/.cache/wal/colors-wal-dwm.h | awk '{print $6}' | tr -d '";')
 factor=0.45
