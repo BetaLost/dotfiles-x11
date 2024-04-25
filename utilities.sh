@@ -55,6 +55,7 @@ case "$1" in
 	"--downlight" ) brightnessctl s 1%-  && pkill -SIGUSR2 -f dwmbar.sh && light_notif;;
 	"--connectblue" ) bluetoothctl power on; bluetoothctl agent on; bluetoothctl default-agent; bluetoothctl disconnect $BLUE_MAC_ADDRESS; bluetoothctl connect $BLUE_MAC_ADDRESS;;
 	"--checkbat" ) blue_notif;;
+ 	"--emojis" ) printf "$(cat emojis.txt | dmenu -i -c -l 10 -p 'Emojis')" | awk '{printf $1}' | xclip -sel c;;
 	"--weather" ) st -c floatst -g 45x8 -e sh -c "curl wttr.in/?0; read";; 
 	"--clock" ) st -c floatst -g 56x9 -e sh -c "tty-clock -scC 1";;
 	"--neofetch" ) st -c floatst -g 66x16 -e sh -c "neofetch; read";;
