@@ -79,13 +79,14 @@ update_ram() {
 update_net() {
 	R2=`cat /sys/class/net/$NET_INTERFACE/statistics/rx_bytes`
 	T2=`cat /sys/class/net/$NET_INTERFACE/statistics/tx_bytes`
-	TBPS=`expr $T2 - $T1`
-	RBPS=`expr $R2 - $R1`
-	TKBPS=`expr $TBPS / 1024`
-	RKBPS=`expr $RBPS / 1024`
+	TBPS=$((T2 - T1))
+	RBPS=$((R2 - R1))
+	TKBPS=$((TBPS / 1024))
+	RKBPS=$((RBPS / 1024))
 	
 	if ((net_toggle || (TKBPS == 0 && RKBPS == 0))); then
 		SSID=$(iwgetid -r)
+		if [[ -z $SSID ]] then SSID="No Internet"; fi
 		echo "$icon_scheme^l^󰖩 $text_scheme $SSID^e^^d^"
 	else
 		if ((RKBPS > 1024)); then
@@ -134,19 +135,25 @@ update_bat() {
 	if ((battery_toggle)); then
 		CHARGE=$(cat /sys/class/power_supply/BAT*/charge_now)
 		CURRENT=$(cat /sys/class/power_supply/BAT*/current_now)
+		VOLTAGE=$(cat /sys/class/power_supply/BAT*/voltage_now)
+		DRAW=$((CURRENT * VOLTAGE))
+		DRAW=$(echo $DRAW | awk '{printf "%.1f", $1 / 1000000000000 }')
 		
 		HOURS_REMAINING=$(echo "scale=2; $CHARGE / $CURRENT" | bc)
 		HOURS=$(printf "%.0f" $HOURS_REMAINING)
 		MINUTES=$(printf "%.0f" $(echo "($HOURS_REMAINING - $HOURS) * 60" | bc))
 		
-		if (( MINUTES < 0 )); then
+		if ((MINUTES < 0)); then
 			((HOURS--))
 			((MINUTES += 60))
 		fi
 		
-		TIME_REMAINING=$(printf "%02d:%02d" $HOURS $MINUTES)
-		
-		echo "$icon_scheme^l^$BAT_ICON $text_scheme $TIME_REMAINING remaining^e^^d^"
+		if ((HOURS == 0)); then
+			echo "$icon_scheme^l^$BAT_ICON $text_scheme $DRAW W ($MINUTES mins)^e^^d^"
+		else
+			TIME_REMAINING=$(printf "%02d:%02d" $HOURS $MINUTES)
+			echo "$icon_scheme^l^$BAT_ICON $text_scheme $DRAW W ($TIME_REMAINING)^e^^d^"
+		fi
 	else
 		echo "$icon_scheme^l^$BAT_ICON $text_scheme $CUR_BAT%^e^^d^"
 	fi
