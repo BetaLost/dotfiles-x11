@@ -85,7 +85,7 @@ update_net() {
 	RKBPS=`expr $RBPS / 1024`
 	
 	if ((net_toggle || (TKBPS == 0 && RKBPS == 0))); then
- 		SSID=$(iwgetid -r)
+		SSID=$(iwgetid -r)
 		echo "$icon_scheme^l^󰖩 $text_scheme $SSID^e^^d^"
 	else
 		if ((RKBPS > 1024)); then
@@ -218,7 +218,7 @@ trap "if ((time_toggle)) then time_toggle=0; else time_toggle=1; fi; update_stat
 date_toggle=0
 trap "if ((date_toggle)) then date_toggle=0; else date_toggle=1; fi; update_status 1 0 0" SIGRTMIN+9
 
-# Power menu
+# Power Menu
 power_menu() {
 	ACTION=$(printf "⏻ Shutdown\n Reboot\n󰤄 Sleep" | dmenu -i -c -d -l 3 -z 250 -p "󰐦 Power Menu")
 	
@@ -231,7 +231,7 @@ power_menu() {
 	fi
 }
 
-trap "power_menu" SIGRTMIN+16
+trap "power_menu &" SIGRTMIN+16
 
 # Initialize volume and brightness sections
 volume_section=$(update_volume)
@@ -276,7 +276,7 @@ update_status(){
 	fi
 	
 	# Draw Status
-	STATUS=$(printf ' \x01%s \x02%s \x03%s \x04%s \x05%s \x06%s \x07%s \x08%s \x09%s \x10%s ' "$volume_section" "$light_section" "$cpu_section" "$ram_section" "$net_section" "$bat_section" "$prayer_section" "$time_section" "$date_section" "$power_section")
+	STATUS=$(printf ' \x01%s \x02%s \x03%s \x04%s \x05%s \x06%s \x07%s \x08%s \x09%s\x10 %s ' "$volume_section" "$light_section" "$cpu_section" "$ram_section" "$net_section" "$bat_section" "$prayer_section" "$time_section" "$date_section" "$power_section")
 	xsetroot -name "$STATUS"
 }
 
