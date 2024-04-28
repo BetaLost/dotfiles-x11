@@ -25,9 +25,14 @@ while IFS= read -r line; do
 	
 	if [[ "$CURRENT_TIME" == "$PRAYER_TIME" ]]; then
 		CURRENT_PRAYER="$PRAYER_NAME"
-		notify-send --urgency=critical "Time for $PRAYER_NAME ($PRAYER_TIME)"
+
+  		if [[ ! -f "$HOME/.config/prayerhistory/notified" ]]; then
+    			dunstify --urgency=critical "Time for $PRAYER_NAME ($PRAYER_TIME)" -r 6
+       			touch "$HOME/.config/prayerhistory/notified"
+	  	fi
 	elif [[ "$CURRENT_TIME" > "$PRAYER_TIME" ]]; then
 		CURRENT_PRAYER="$PRAYER_NAME"
+  		if [[ -f "$HOME/.config/prayerhistory/notified" ]] then rm "$HOME/.config/prayerhistory/notified"; fi
 	elif [[ "$CURRENT_TIME" < "$PRAYER_TIME" ]]; then
 		NEXT_PRAYER="$PRAYER_NAME"
 		NEXT_PRAYER_TIME="$PRAYER_TIME"
