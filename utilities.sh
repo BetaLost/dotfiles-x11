@@ -24,7 +24,7 @@ light_notif() {
 }
 
 blue_notif() {
-	BLUE_DEV=$(bluetoothctl info | grep "Name" | awk -F': ' '{print $2}')
+	BLUE_DEV=$(bluetoothctl info | grep -oP 'Name: \K.*')
 	
 	if [[ -n $BLUE_DEV ]]; then
 		BLUE_PERCENTAGE=$(bluetoothctl info | grep "Battery" | awk '{gsub(/[\(\)]/,"",$4); print $4}')
