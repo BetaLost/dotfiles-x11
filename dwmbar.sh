@@ -15,11 +15,7 @@ update_volume() {
 	VOL=$(pulsemixer --get-volume | cut -f 1 -d " ")
 	
 	MUTE_STAT=$(pulsemixer --get-mute)
-	if [[ $MUTE_STAT == "1" ]]; then
-		VOL_ICON="婢"
-	else
-		VOL_ICON="墳"
-	fi
+	if [[ $MUTE_STAT == "1" ]] then VOL_ICON="婢"; else VOL_ICON="墳"; fi
 	
 	echo "$icon_scheme^l^$VOL_ICON $text_scheme $VOL%^e^^d^"
 }
@@ -234,7 +230,7 @@ power_menu() {
 	elif [[ $ACTION == " Reboot" ]]; then
 		reboot
 	elif [[ $ACTION == "󰤄 Sleep" ]]; then
-		dunstify "sleep"
+		systemctl suspend
 	fi
 }
 
@@ -293,6 +289,10 @@ update_status 1 1 1
 # Get Hijri date
 HIJRI_DATE=$(bash $HOME/.config/prayer.sh -h)
 
+# Assign initial bluetooth device and audio sink
+PREV_BLUE_DEV=$(bluetoothctl info | grep -oP 'Name: \K.*')
+PREV_SINK_ID=$(pulsemixer --list-sinks | awk '/Default/ {split($3,a,","); print a[1]}')
+
 while :; do
 	# Increment counters and check bluetooth connection every second
 	if ((main_count < SECONDS)); then
@@ -302,17 +302,20 @@ while :; do
 		((prayer_count++))
 		
 		# Check if a bluetooth device is connected
-		BLUE_DEV=$(bluetoothctl info | grep "Name" | awk -F': ' '{print $2}')
+		BLUE_DEV=$(bluetoothctl info | grep -oP 'Name: \K.*')
 		
 		if [[ -n $BLUE_DEV && -z $PREV_BLUE_DEV ]]; then
 			dunstify "󰥰 Connected: $BLUE_DEV"
-			vol_sig
 		elif [[ -z $BLUE_DEV && -n $PREV_BLUE_DEV ]]; then
 			dunstify "󰽟 Disconnected: $PREV_BLUE_DEV"
-			vol_sig
 		fi
 		
-		PREV_BLUE_DEV=$(bluetoothctl info | grep "Name" | awk -F': ' '{print $2}')
+		PREV_BLUE_DEV=$BLUE_DEV
+		
+		# Check if the audio sink was changed
+		CURRENT_SINK_ID=$(pulsemixer --list-sinks | awk '/Default/ {split($3,a,","); print a[1]}')
+		if [[ $CURRENT_SINK_ID != $PREV_SINK_ID ]]; then vol_sig; fi
+		PREV_SINK_ID=$CURRENT_SINK_ID
 	fi
 	
 	# Update battery info every 5 seconds
