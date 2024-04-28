@@ -18,7 +18,7 @@ TIME=$(date +"%-H")
 DATE=$(date +"%d-%m-%Y")
 
 if [[ -f "$HOME/.config/prayerhistory/$DATE.txt" ]]; then
-	PRAYER_NAME=$(bash $HOME/.config/prayer.sh -n)
+	PRAYER_NAME=$(bash $HOME/.config/scripts/prayer.sh -n)
 	case $PRAYER_NAME in
 		"Fajr") FOLDER="dawn";;
 		"Sunrise") FOLDER="morning";;
@@ -47,10 +47,15 @@ fi
 wal -i $HOME/.config/wallpapers/$FOLDER/
 #feh --bg-scale $HOME/.config/wallpapers/$FOLDER/$WALLPAPER
 
-# Kill pre-existing dwmbar instances then run the dwmbar script
-cd $HOME/.config
+# Run scripts
+touch $HOME/.clipboard_history
+cd $HOME/.config/scripts
+
 pkill -f dwmbar.sh
-sh dwmbar.sh &
+pkill -f clipboard.sh
+
+bash dwmbar.sh &
+bash clipboard.sh &
 
 # -- CONFIGURE DWM COLORSCHEME --
 
@@ -113,4 +118,8 @@ cd $HOME/.config/st && sudo make clean install &
 cd $HOME/.config/dwm && sudo make clean install
 
 cd $HOME
+
+# Enable touchpad tapping
+# xinput set-prop 13 "libinput Tapping Enabled" 1
+ 
 exec dwm
