@@ -16,7 +16,7 @@ duration() {
 	hours=$((time_diff / 3600))
 	minutes=$(((time_diff % 3600) / 60))
 	
-	printf '%02d:%02d\n' "$hours" "$minutes"
+	if ((hours == 0)); then printf "$minutes mins"; else printf '%02d:%02d\n' "$hours" "$minutes"; fi
 }
 
 while IFS= read -r line; do 
