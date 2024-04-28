@@ -1,4 +1,4 @@
-BACKLIGHT="intel_backlight"
+BACKLIGHT="_BACKLIGHT_"
 BLUE_MAC_ADDRESS="18:B9:6E:A8:38:CC"
 
 vol_notif() {
