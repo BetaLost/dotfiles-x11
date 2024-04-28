@@ -1,4 +1,5 @@
 BACKLIGHT="_BACKLIGHT_"
+HISTFILE="$HOME/.clipboard_history"
 BLUE_MAC_ADDRESS="18:B9:6E:A8:38:CC"
 
 vol_notif() {
@@ -56,7 +57,7 @@ case "$1" in
 	"--connectblue" ) bluetoothctl power on; bluetoothctl agent on; bluetoothctl default-agent; bluetoothctl disconnect $BLUE_MAC_ADDRESS; bluetoothctl connect $BLUE_MAC_ADDRESS;;
 	"--checkbat" ) blue_notif;;
 	"--emojis" ) printf "$(cat $HOME/.config/scripts/emojis.txt | dmenu -i -c -l 10 -p 'Emojis')" | awk '{printf $1}' | xclip -sel c;;
-	"--clipboard" ) sed -i '${/^[[:space:]]*$/d;}' $HOME/.clipboard_history; cat $HOME/.clipboard_history | dmenu -i -c -l 10 -p "Clipboard";;
+	"--clipboard" ) sed -i '${/^[[:space:]]*$/d;}' $HISTFILE; cat $HISTFILE | dmenu -i -c -l 10 -p "Clipboard" | tr -d '\n' |  xclip -sel c;;
 	"--weather" ) st -c floatst -g 45x8 -e sh -c "curl wttr.in/?0; read";; 
 	"--clock" ) st -c floatst -g 56x9 -e sh -c "tty-clock -scC 1";;
 	"--neofetch" ) st -c floatst -g 66x16 -e sh -c "neofetch; read";;
