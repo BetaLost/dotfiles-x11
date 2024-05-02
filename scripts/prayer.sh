@@ -47,7 +47,7 @@ fi
 if [[ "$1" == "-r" ]]; then
 	if [[ -n "$NEXT_PRAYER" ]]; then
 		TIME_REMAINING=$(duration $CURRENT_TIME $NEXT_PRAYER_TIME)
-		printf "$CURRENT_PRAYER ($TIME_REMAINING to $NEXT_PRAYER)"
+		printf "$NEXT_PRAYER in $TIME_REMAINING"
 	else
 		printf "$CURRENT_PRAYER"
 	fi
