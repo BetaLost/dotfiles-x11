@@ -63,6 +63,9 @@ inoremap <CR> <CR>x<BS>
 nnoremap o ox<BS>
 nnoremap O Ox<BS>
 
+" Restore terminal cursor on exit
+autocmd VimLeave * set guicursor=a:ver25-blinkon1
+
 lua <<EOF
 	-- Colorscheme
 	require("monokai-pro").setup({
