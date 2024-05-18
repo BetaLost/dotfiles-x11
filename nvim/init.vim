@@ -1,48 +1,37 @@
-" Vim Plug
+" PLUGINS - Vim Plug
 call plug#begin()
 
-" Icons
-Plug 'nvim-tree/nvim-web-devicons'
+Plug 'nvim-tree/nvim-web-devicons' " Colored icons
+Plug 'akinsho/bufferline.nvim', { 'tag': '*' } " File tabs
 
-" File Tabs
-Plug 'romgrk/barbar.nvim'
+Plug 'nvim-lualine/lualine.nvim' " Statusline
 
-" Statusline
-Plug 'SmiteshP/nvim-navic'
-Plug 'nvim-lualine/lualine.nvim'
+Plug 'windwp/nvim-autopairs' " Autopair
+Plug 'alvan/vim-closetag' " Auto close HTML tags
 
-" HTML Emmet
-Plug 'mattn/emmet-vim'
+Plug 'MunifTanjim/nui.nvim' " UI Library, Neotree dependency
+Plug 'nvim-lua/plenary.nvim' " Neotree dependency
+Plug 'nvim-neo-tree/neo-tree.nvim' " Neotree file explorer
 
-" Close tags
-Plug 'windwp/nvim-autopairs'
-Plug 'alvan/vim-closetag'
-
-" File Explorer
-Plug 'MunifTanjim/nui.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-neo-tree/neo-tree.nvim'
-
-" Colors
-Plug 'lilydjwg/colorizer'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'loctvl842/monokai-pro.nvim'
+Plug 'lilydjwg/colorizer' " Visualize hex colors
+Plug 'loctvl842/monokai-pro.nvim' " Colorscheme
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' } " Syntax highlighting
 
 " Autocomplete
-Plug 'neovim/nvim-lspconfig'
-Plug 'onsails/lspkind.nvim'
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/vim-vsnip'
+Plug 'neovim/nvim-lspconfig' " Quickstart configs for Nvim LSP
+Plug 'onsails/lspkind.nvim' " Vscode-like pictograms
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
 
 call plug#end()
 
-" General configuration
+" GENERAL CONFIGURATION
 filetype indent on
 syntax on
 set number
@@ -53,28 +42,20 @@ set ttimeoutlen=0
 set completeopt=menu,menuone,noselect
 set pumheight=10
 
+" KEYBINDS
+
 " NeoTree
 nnoremap <C-t> :Neotree toggle<CR>
 
-" Switch Tabs
-map <A-,> <Cmd>BufferPrevious<CR>
-map <A-.> <Cmd>BufferNext<CR>
-map <A-1> <Cmd>BufferGoto 1<CR>
-map <A-2> <Cmd>BufferGoto 2<CR>
-map <A-3> <Cmd>BufferGoto 3<CR>
-map <A-4> <Cmd>BufferGoto 4<CR>
-map <A-5> <Cmd>BufferGoto 5<CR>
-map <A-6> <Cmd>BufferGoto 6<CR>
-map <A-7> <Cmd>BufferGoto 7<CR>
-map <A-8> <Cmd>BufferGoto 8<CR>
-map <A-9> <Cmd>BufferGoto 9<CR>
-map <A-c> <Cmd>BufferClose<CR>
+" Copy to system clipboard 
+nmap <C-A-c> "+y$
 
-" Build System
-autocmd FileType python map <C-b> :w<CR>:!clear && python3 % && clear<CR>
-autocmd FileType rust map <C-b> :w<CR>:!clear && cargo run<CR>
+" Manage Tabs
+map <A-,> <Cmd>bnext<CR>
+map <A-.> <Cmd>bprev<CR>
+map <A-c> <Cmd>bdelete<CR>
 
-" Visualize Indent
+" Indent visualization
 set list listchars=tab:\│\ 
 hi NonText ctermfg=239
 inoremap <CR> <CR>x<BS>
@@ -82,31 +63,52 @@ nnoremap o ox<BS>
 nnoremap O Ox<BS>
 
 lua <<EOF
-	-- Theme
+	-- Colorscheme
 	require("monokai-pro").setup({
 		filter = "spectrum", -- classic | octagon | pro | machine | ristretto | spectrum
 	})
 	vim.cmd([[colorscheme monokai-pro]])
-
-	-- Tabs
-	require("bufferline").setup({
-
-		options = {
-			themable = true,
-			separator_style = "slant",
-			offsets = {{
-				filetype = "neo-tree",
-				text = "File Explorer",
-				highlight = "Directory",
-				separator = true
-			}}
-		}
-	})
 	
+	-- File tabs
+	require("bufferline").setup({options = {
+		separator_style = "slant",
+		indicator = {
+			style = "none",
+		},
+		buffer_close_icon = '',
+		close_icon = '',
+		modified_icon = '●',
+		left_trunc_marker = '',
+		right_trunc_marker = '',
+		numbers = "ordinal",
+		diagnostics = "nvim_lsp",
+		show_buffer_icons = true,
+		show_buffer_close_icons = true,
+		show_close_icon = true,
+		persist_buffer_sort = true,
+		enforce_regular_tabs = true,
+		diagnostics_indicator = function(count, level)
+			local icon = level:match("error") and "" or ""
+			return icon .. " " .. count
+		end
+	}})
+	
+	-- Statusline
+	require('lualine').setup({
+		options = {
+			theme = 'monokai-pro',
+			section_separators = { left = '', right = '' },
+			disabled_filetypes = { -- Recommended filetypes to disable winbar
+				winbar = { 'gitcommit', 'neo-tree', 'toggleterm', 'fugitive' },
+			},
+		},
+		winbar = winbar,
+		inactive_winbar = winbar,
+	})
+
 	-- Setup File Explorer
 	require("neo-tree").setup({
 		close_if_last_window = true,
-		popup_border_style = "rounded",
 		symbols = false,
 		default_component_configs = {
 			symbols = false
@@ -125,52 +127,21 @@ lua <<EOF
 			}
 		}
 	})
-
-	-- Statusline
-	local navic = require('nvim-navic')
-	navic.setup({
-		separator = "  "
-	})
 	
-	local winbar = {
-		lualine_a = {},
-		lualine_b = {
-			{
-				'filename',
-				icon = '',
-				padding = { left = 4 }
-			},
+	-- Syntax Highlighting
+	require('nvim-treesitter.configs').setup {
+		ensure_installed = { "c", "lua", "rust", "python" },
+		sync_install = false,
+		auto_install = true,
+		ignore_install = {},
+		
+		highlight = {
+			enable = true,
+			disable = {},
+			additional_vim_regex_highlighting = false
 		},
-		lualine_c = {
-			{
-				navic.get_location,
-				icon = "",
-				cond = navic.is_available,
-			},
-		},
-		lualine_x = {},
-		lualine_y = {},
-		lualine_z = {}
 	}
 	
-	require('lualine').setup({
-		options = {
-			theme = 'monokai-pro',
-			icons_enabled = true,
-			disabled_filetypes = { -- Recommended filetypes to disable winbar
-				winbar = { 'gitcommit', 'neo-tree', 'toggleterm', 'fugitive' },
-			},
-		},
-		winbar = winbar,
-		inactive_winbar = winbar,
-	})
-
-	local on_attach = function(client, bufnr)
-		if client.server_capabilities.documentSymbolProvider then
-			navic.attach(client, bufnr)
-		end
-	end
-
 	-- Setup Autocomplete
 	local lspkind = require('lspkind')
 	local cmp = require("cmp")
@@ -179,7 +150,7 @@ lua <<EOF
 			completion = cmp.config.window.bordered(),
 			documentation = cmp.config.window.bordered(),
 		},
-
+		
 		formatting = {
 			format = lspkind.cmp_format({
 				mode = 'symbol_text',
@@ -187,7 +158,7 @@ lua <<EOF
 				ellipsis_char = '...',
 			})
 		},
-
+		
 		snippet = {
 			expand = function(args)
 				vim.fn["vsnip#anonymous"](args.body)
@@ -201,7 +172,7 @@ lua <<EOF
 			['<C-e>'] = cmp.mapping.abort(),
 			['<Tab>'] = cmp.mapping.confirm({ select = true })
 		}),
-
+		
 		sources = cmp.config.sources({
 				{ name = "nvim_lsp" },
 				{ name = "vsnip" },
@@ -210,45 +181,34 @@ lua <<EOF
 				{ name = "buffer" }
 		})
 	})
-
-	cmp.setup.cmdline({ "/", "?" }, {
-		mapping = cmp.mapping.preset.cmdline(),
-		sources = {
-			{ name = "buffer" }
-		}
-	})
-
-	cmp.setup.cmdline(":", {
-		mapping = cmp.mapping.preset.cmdline(),
-		sources = cmp.config.sources({
-			{ name = "path" }
-		}, {
-			{ name = "cmdline" }
-		})
-	})
-
+	
 	local capabilities = require('cmp_nvim_lsp').default_capabilities()
 	
+	-- Python
 	require("lspconfig")["pyright"].setup {
 		capabilities = capabilities,
 		on_attach = on_attach
 	}
-
+	
+	-- Javascript
 	require("lspconfig")["tsserver"].setup {
 		capabilities = capabilities,
 		on_attach = on_attach
 	}
-
+	
+	-- Rust
 	require("lspconfig")["rust_analyzer"].setup {
 		capabilities = capabilities,
 		on_attach = on_attach
 	}
-
+	
+	-- C/C++
 	require("lspconfig")["clangd"].setup {
 		capabilities = capabilities,
 		on_attach = on_attach
 	}
-
+	
+	-- Lua
 	require("lspconfig")["lua_ls"].setup {
 		capabilities = capabilities,
 		on_attach = on_attach,
@@ -260,34 +220,9 @@ lua <<EOF
 			}
 		}
 	}
-
-	vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-		vim.lsp.diagnostic.on_publish_diagnostics, {
-			signs = {
-				severity_limit = "Hint",
-			},
-			virtual_text = {
-				severity_limit = "Warning",
-			},
-		}
-	)
-
+	
 	-- Close Pairs
 	require("nvim-autopairs").setup({})
 	local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 	cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
-
-	-- Syntax Highlighting
-	require('nvim-treesitter.configs').setup {
-		ensure_installed = { "c", "lua", "rust", "python" },
-		sync_install = false,
-		auto_install = true,
-		ignore_install = {},
-
-		highlight = {
-			enable = true,
-			disable = {},
-			additional_vim_regex_highlighting = false
-		},
-	}
 EOF
