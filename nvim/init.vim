@@ -56,6 +56,7 @@ map <A-.> <Cmd>bprev<CR>
 map <A-c> <Cmd>bdelete<CR>
 
 " Indent visualization
+let g:rust_recommended_style = 0
 set list listchars=tab:\│\ 
 hi NonText ctermfg=239
 inoremap <CR> <CR>x<BS>
